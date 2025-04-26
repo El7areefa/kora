@@ -70,6 +70,8 @@ onBeforeUnmount(() => {
   }
 });
 </script>
+
+
 <style lang="scss">
 @use "./table.scss" as *;
 </style>
