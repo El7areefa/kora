@@ -6,7 +6,7 @@ export class Team {
   id: number;
   name: string;
   logoUrl: string;
-  numberOfSucessMatches: number;
+  numberOfSuccessMatches: number;
   numberOfDefeatsMatches: number;
   numberOfDrawsMatches: number;
   numberOfPoints: number;
