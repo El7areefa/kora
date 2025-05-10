@@ -14,16 +14,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout the code
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Set up Node.js (Upgrade to a compatible version)
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  # Specify the version of Node.js you need
+          node-version: '18'  # Set to at least 18.x.x
 
+      # Clear npm cache (optional but recommended)
+      - name: Clear npm cache
+        run: npm cache clean --force
+
+      # Install dependencies
       - name: Install dependencies
         run: npm install
 
+      # Run ESLint
       - name: Run ESLint
-        run: npx eslint . --ext .js,.jsx,.ts,.tsx,.vue  # Run ESLint on JS, JSX, TS, TSX, and Vue files
+        run: npx eslint . --ext .js,.jsx,.ts,.tsx,.vue
