@@ -50,7 +50,6 @@ export default defineConfig([
       'prefer-const': 'error',
       'no-var': 'error',
       'no-multi-spaces': 'error',
-      'single-quote': ['error', 'single'],
 
       // Vue 3 plugin individual rules
       'vue/no-v-html': 'warn', // Prevent using v-html
