@@ -50,6 +50,9 @@ export default [
       'vue/no-unused-vars': 'warn', // Warn on unused variables
       'vue/valid-v-bind': 'error', // Ensure valid v-bind directives
       'vue/valid-v-slot': 'error', // Ensure valid v-slot directives
+      // TypeScript rules (prefixed with plugin name)
+      '@typescript-eslint/no-unused-vars': 'error',
+      '@typescript-eslint/no-explicit-any': 'warn',
     },
   },
 ];
