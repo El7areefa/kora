@@ -7,7 +7,10 @@ export default defineNuxtConfig({
     // '@': path.resolve(__dirname, '/'),
     assets: '/<rootDir>/assets/'
   },
-  css: ['~/assets/scss/main.scss'],
+  css: [
+     '@fortawesome/fontawesome-free/css/all.min.css',
+    '~/assets/scss/main.scss'
+  ],
   postcss: {
     plugins: {
       tailwindcss: {},
