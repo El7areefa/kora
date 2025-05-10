@@ -1,34 +1,5 @@
-import path from 'path';
-import {fileURLToPath} from 'url';
-import {FlatCompat} from '@eslint/eslintrc';
 import withNuxt from './.nuxt/eslint.config.mjs';
 
-const filename = fileURLToPath(import.meta.url);
-const dirname = path.dirname(filename);
-
-const compat = new FlatCompat({
-  baseDirectory: dirname
-});
-const getRules = (extendedRules, excludeKeys = null) => {
-  const rules = extendedRules
-      .filter((rule) => rule.rules)
-      .map((rule) => rule.rules)
-      .reduce((r, c) => Object.assign(r, c), {});
-
-  if (excludeKeys) {
-    // remove all the properties from the rules object that matches the excludeKeys string
-    // these keys from airbnb rules are not supported by eslint 9
-    Object.keys(rules).forEach((key) => {
-      if (key.includes(excludeKeys)) {
-        delete rules[key];
-      }
-    });
-  }
-
-  delete rules['max-len'];
-
-  return rules;
-};
 
 export default withNuxt({
   settings: {
@@ -52,8 +23,8 @@ export default withNuxt({
   },
   ignores: ['*.config.*js', '.tailwind/*', 'shims-vue.d.ts'],
   rules: {
-    ...getRules(compat.extends('airbnb-base')),
-    ...getRules(compat.extends('airbnb-typescript/base'), '@typescript-eslint/'),
+    // ...getRules(compat.extends('airbnb-base')),
+    // ...getRules(compat.extends('airbnb-typescript/base'), '@typescript-eslint/'),
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'vue/no-unused-components': 'error',
