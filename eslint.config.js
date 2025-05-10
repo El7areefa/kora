@@ -32,7 +32,7 @@ export default defineConfig([
     rules: {
       // Base XO-like stylistic rules
       indent: ['error', 2],
-      quotes: ['error', 'single'],
+      quotes: ['error', 'double'],
       semi: ['error', 'always'],
       'comma-dangle': ['error', 'always-multiline'],
       'object-curly-spacing': ['error', 'always'],
@@ -50,6 +50,7 @@ export default defineConfig([
       'prefer-const': 'error',
       'no-var': 'error',
       'no-multi-spaces': 'error',
+      'single-quote': ['error', 'single'],
 
       // Vue 3 plugin individual rules
       'vue/no-v-html': 'warn', // Prevent using v-html
