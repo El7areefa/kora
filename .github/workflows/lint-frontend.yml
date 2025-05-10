@@ -40,4 +40,4 @@ jobs:
 
       # Run ESLint
       - name: Run ESLint
-        run: npx eslint . --ext .js,.jsx,.ts,.tsx,.vue
+        run: npm run lint
