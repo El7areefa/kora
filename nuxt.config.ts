@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   alias: {
     // '@': path.resolve(__dirname, '/'),
-    assets: '/<rootDir>/assets/'
+    assets: '/<rootDir>/assets/',
   },
   css: [
      '@fortawesome/fontawesome-free/css/all.min.css',
