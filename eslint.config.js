@@ -1,34 +1,25 @@
 // eslint.config.js
-import { defineConfig } from 'eslint/config';
-import vue from 'eslint-plugin-vue';
+import vue from 'eslint-plugin-vue'
+import tseslint from '@typescript-eslint/eslint-plugin'
+import tsParser from '@typescript-eslint/parser'
 
-export default defineConfig([
+export default [
   {
-    ignores: [
-      'node_modules/',
-      'dist/',
-      '.build/',
-      '.nuxt/',
-      'output/',
-      'public/',
-      'coverage/',
-      'static/',
-      '.vscode/',
-      '.idea/',
-    ],
-  },
-  {
-    files: ['**/*.{js,ts,vue}'],
+    ignores: ['.nuxt', 'dist', 'node_modules'],
+
     languageOptions: {
-      ecmaVersion: 'latest',
+      parser: tsParser,
+      ecmaVersion: 2020,
       sourceType: 'module',
-      parserOptions: {
-        parser: 'vue-eslint-parser', // Add vue-eslint-parser here
-      },
     },
+
     plugins: {
       vue,
+      '@typescript-eslint': tseslint,
     },
+
+    files: ['**/*.ts', '**/*.vue'],
+
     rules: {
       // Base XO-like stylistic rules
       indent: ['error', 2],
@@ -61,4 +52,4 @@ export default defineConfig([
       'vue/valid-v-slot': 'error', // Ensure valid v-slot directives
     },
   },
-]);
+];
