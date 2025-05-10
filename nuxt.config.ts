@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   alias: {
     // '@': path.resolve(__dirname, '/'),
-    assets: '/<rootDir>/assets/'
+    assets: '/<rootDir>/assets/',
   },
   css: ['~/assets/scss/main.scss'],
   postcss: {
@@ -14,4 +14,4 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-})
+});
