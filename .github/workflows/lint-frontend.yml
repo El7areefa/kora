@@ -2,8 +2,12 @@ name: Lint Frontend
 
 on:
   pull_request:
-    paths:
-      - './**'
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
   lint-frontend:
