@@ -1,43 +1,26 @@
-name: ESLint on Pull Request to Main
+# .github/workflows/lint.yml
+name: Lint PR
 
 on:
   pull_request:
     branches:
       - main
-    types:
-      - opened
-      - synchronize
-      - reopened
 
 jobs:
-  eslint:
+  lint:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the code
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # Set up Node.js (Upgrade to a compatible version)
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'  # Use at least Node.js 18
+          node-version: '18'
 
-      # Clear npm cache (optional but recommended)
-      - name: Clear npm cache
-        run: npm cache clean --force
-
-      # Remove existing node_modules and package-lock.json
-      - name: Remove node_modules and package-lock.json
-        run: |
-          rm -rf node_modules
-          rm -f package-lock.json
-
-      # Reinstall dependencies
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      # Run ESLint
       - name: Run ESLint
-        run: npm run lint
+        run: npx eslint . --ext .js,.ts,.vue
