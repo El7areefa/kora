@@ -4,9 +4,9 @@
       <h1 class="text-3xl font-bold">Teams</h1>
       <button
         @click="addTeam"
-        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        class="btn btn-primary"
       >
-        + Add Team
+        <i class="fas fa-plus"></i> Add Team
       </button>
     </div>
 

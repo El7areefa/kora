@@ -36,10 +36,10 @@
             <InputField label="Player jersey Number" v-model="player.jerseyNumber" type="number" />
             <InputField label="Player kit Size" v-model="player.kitSize" type="text" />
             <InputField label="Player position" v-model="player.position" type="text" />
-            <InputField label="Player is Goal Keeper" v-model="player.isGoalKeeper" type="checkbox" />
             <InputField label="Player image Url" v-model="player.imageUrl" type="text" />
             <InputField label="Player weight" v-model="player.weight" type="number" />
             <InputField label="Player height" v-model="player.height" type="number" />
+            <InputField label="Player is Goal Keeper" v-model="player.isGoalKeeper" type="toggle" />
         </div>
 
         <div class="flex justify-end mt-auto">
@@ -58,17 +58,18 @@
 <script lang="ts" setup>
 import type { Player } from "~/models/player";
 
-const props = defineProps<{
+ defineProps<{
   player: Player;
   modelValue: boolean;
 }>();
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: boolean): void;
+  (e: "addPlayer"): void;
 }>();
 
 const addPlayer = () => {
-  console.log('addPlayer');
+  emit('addPlayer');
 }
 </script>
 

@@ -282,4 +282,56 @@ export default {
   plugins: [
     require('daisyui'),
   ],
+  daisyui: {
+    themes: [
+      {
+        light: {
+          name: "light",
+          colorScheme: "light",
+          default: false,
+          prefersDark: false,
+
+          'base-100': 'oklch(98% 0.003 247.858)',
+          'base-200': 'oklch(96% 0.007 247.896)',
+          'base-300': 'oklch(92% 0.013 255.508)',
+          'base-content': 'oklch(20% 0.042 265.755)',
+
+          primary: 'oklch(80% 0.105 251.813)',
+          'primary-content': 'oklch(28% 0.091 267.935)',
+
+          secondary: 'oklch(78% 0.115 274.713)',
+          'secondary-content': 'oklch(25% 0.09 281.288)',
+
+          accent: 'oklch(0% 0 0)',
+          'accent-content': 'oklch(100% 0 0)',
+
+          neutral: 'oklch(37% 0.044 257.287)',
+          'neutral-content': 'oklch(98% 0.003 247.858)',
+
+          info: 'oklch(62% 0.214 259.815)',
+          'info-content': 'oklch(97% 0.014 254.604)',
+
+          success: 'oklch(76% 0.233 130.85)',
+          'success-content': 'oklch(98% 0.031 120.757)',
+
+          warning: 'oklch(79% 0.184 86.047)',
+          'warning-content': 'oklch(98% 0.026 102.212)',
+
+          error: 'oklch(64% 0.246 16.439)',
+          'error-content': 'oklch(96% 0.015 12.422)',
+
+          '--radius-selector': '0.5rem',
+          '--radius-field': '1rem',
+          '--radius-box': '2rem',
+
+          '--size-selector': '0.25rem',
+          '--size-field': '0.25rem',
+
+          '--border': '1px',
+          '--depth': '0',
+          '--noise': '0',
+        },
+      },
+    ],
+  },
 };
