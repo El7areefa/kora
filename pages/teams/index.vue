@@ -9,6 +9,7 @@
         <i class="fas fa-plus"></i> Add Team
       </button>
     </div>
+    <SearchInput placeholder="Search for a team" v-model="search" />
 
     <!-- Table -->
     <Table v-if="teams.length > 0" type="bordered" showHover>
@@ -53,6 +54,8 @@
 
 <script setup lang="ts">
 import { Team } from "../../models/Team";
+
+const search = ref('');
 
 // Dummy team data
 const teams = ref<Team[]>([

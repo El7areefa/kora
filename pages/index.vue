@@ -3,12 +3,13 @@
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-3xl font-bold">Leagues</h1>
       <button
-        @click="addLeague"
-        class="btn btn-primary"
+      @click="addLeague"
+      class="btn btn-primary"
       >
-        + Add League
-      </button>
-    </div>
+      <i class="fas fa-plus"></i> Add League
+    </button>
+  </div>
+  <SearchInput placeholder="Search for a league" v-model="search" />
 
     <!-- Table -->
     <Table v-if="leagues.length > 0" type="bordered" showHover>
@@ -55,9 +56,8 @@ import { League } from '~/models/league';
 
 
 // Dummy team data
-const leagues = ref<League[]>([
-
-]);
+const leagues = ref<League[]>([]);
+const search = ref('');
 
 const selectedLeague = ref<League>(new League(0, ''));
 

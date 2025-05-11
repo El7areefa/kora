@@ -9,6 +9,8 @@
           <i class="fas fa-plus"></i> Add Player
         </button>
       </div>
+
+      <SearchInput placeholder="Search for a player" v-model="search" />
   
       <!-- Table -->
       <Table v-if="players.length > 0" type="bordered" showHover>
@@ -58,7 +60,7 @@
   <script setup lang="ts">
 import { Player } from '~/models/player';
 
-
+const search = ref('');
   
   // Dummy team data
   const players = ref<Player[]>([]);

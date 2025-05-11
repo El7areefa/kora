@@ -11,7 +11,7 @@
 
     <!-- Sidebar -->
     <aside
-      v-click-outside="handleClickOutside"
+      v-click-outside="closeSidebar"
       :class="[
         'fixed top-0 left-0 h-screen  bg-white shadow-md transform transition-transform duration-300 z-40',
         isOpen || !isMobile ? 'translate-x-0' : '-translate-x-full',
@@ -54,16 +54,10 @@ const openSidebar = () => {
 }
 
 // Handle click outside
-const handleClickOutside = () => {
+const closeSidebar = () => {
   if (isMobile.value && isOpen.value) {
     isOpen.value = false
     emit('update-sidebar', false)
-  }
-}
-
-const closeSidebar = () => {
-  if (isMobile.value) {
-    isOpen.value = false
   }
 }
 
