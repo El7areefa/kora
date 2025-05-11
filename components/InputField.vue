@@ -16,7 +16,7 @@
 const props = defineProps<{
   modelValue: string | number | boolean;
   label: string;
-  type?: 'text' | 'number' | 'date' | 'checkbox' | 'radio' | 'select' | 'textarea';
+  type?: 'text' | 'number' | 'date' | 'checkbox' | 'radio' | 'select' | 'textarea' | 'file';
 }>();
 
 const emit = defineEmits<{

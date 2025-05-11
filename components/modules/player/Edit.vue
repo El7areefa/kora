@@ -16,7 +16,7 @@
     <div class="drawer-side">
       <label for="drawer-edit-player" class="drawer-overlay"></label>
 
-      <div class="min-h-full w-96 bg-white p-4">
+      <div class="min-h-full w-96 flex flex-col bg-white p-4">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-bold mb-4">
             {{ player?.id ? "Edit" : "Add" }} Player
@@ -29,7 +29,7 @@
           </button>
         </div>
 
-        <div v-if="player" class="space-y-4">
+        <div class="space-y-4">
             <InputField label="Player Name" v-model="player.name" type="text" />
             <InputField label="Player Nick Name" v-model="player.nickName" type="text" />
             <InputField label="Player jersey Name" v-model="player.jerseyName" type="text" />
@@ -41,6 +41,15 @@
             <InputField label="Player weight" v-model="player.weight" type="number" />
             <InputField label="Player height" v-model="player.height" type="number" />
         </div>
+
+        <div class="flex justify-end mt-auto">
+          <button class="btn btn-sm btn-ghost" @click="emit('update:modelValue', false)">
+           Cancel
+          </button>
+          <button class="btn btn-sm btn-ghost" @click="addPlayer">
+            <i class="fas fa-plus"></i> Add Player
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -50,13 +59,17 @@
 import type { Player } from "~/models/player";
 
 const props = defineProps<{
-  player: Player | null;
+  player: Player;
   modelValue: boolean;
 }>();
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: boolean): void;
 }>();
+
+const addPlayer = () => {
+  console.log('addPlayer');
+}
 </script>
 
 <style>

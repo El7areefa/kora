@@ -16,7 +16,7 @@
     <div class="drawer-side">
       <label for="drawer-edit-team" class="drawer-overlay"></label>
 
-      <div class="min-h-full w-96 bg-white p-4">
+      <div class="min-h-full w-96 flex flex-col bg-white p-4">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-bold mb-4">{{team?.id ? 'Edit' : 'Add'}} Team</h2>
           <button class="btn btn-sm btn-circle btn-ghost" @click="emit('update:modelValue', false)">
@@ -25,29 +25,19 @@
         </div>
 
 
-        <div v-if="team" class="space-y-4">
-          <div>
-            <label class="label">
-              <span class="label-text">Team Name</span>
-            </label>
-            <input
-              v-model="team.name"
-              type="text"
-              class="input input-bordered w-full"
-            />
-          </div>
+        <div class="space-y-4">
+          <InputField label="Team Name" v-model="team.name" type="text" />
+          <InputField label="Team Logo" v-model="team.logoUrl" type="file" />
+        </div>
+        
 
-          <div>
-            <label class="label">
-              <span class="label-text">Logo URL</span>
-            </label>
-            <input
-              v-model="team.logoUrl"
-              type="text"
-              class="input input-bordered w-full"
-            />
-          </div>
-
+        <div class="flex justify-end mt-auto">
+          <button class="btn btn-sm btn-ghost" @click="emit('update:modelValue', false)">
+           Cancel
+          </button>
+          <button class="btn btn-sm btn-ghost" @click="addPlayer">
+            <i class="fas fa-plus"></i> Add Player
+          </button>
         </div>
 
       </div>
@@ -59,7 +49,7 @@
 import type { Team } from '~/models/Team';
 
 const props = defineProps<{
-  team: Team | null;
+  team: Team;
   modelValue: boolean;
 }>();
 
@@ -67,6 +57,9 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void;
 }>();
 
+const addPlayer = () => {
+  console.log('addPlayer');
+}
 </script>
 
 <style >

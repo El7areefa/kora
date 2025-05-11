@@ -1,17 +1,17 @@
 <template>
     <div class="p-8 flex flex-col flex-1">
       <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold">Teams</h1>
+        <h1 class="text-3xl font-bold">Players</h1>
         <button
-          @click="addTeam"
+          @click="addPlayer"
           class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
         >
-          + Add Team
+          + Add Player
         </button>
       </div>
   
       <!-- Table -->
-      <Table type="bordered" showHover>
+      <Table v-if="players.length > 0" type="bordered" showHover>
         <thead>
           <tr>
             <TableHead class="pl-2 w-[65%]">Name</TableHead>
@@ -20,15 +20,15 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(team, index) in teams" :key="team.id">
-            <TableCell>{{ team.name }}</TableCell>
-            <TableCell>{{ team.players.length }}</TableCell>
+          <tr v-for="(player, index) in players" :key="player.id">
+            <TableCell>{{ player.name }}</TableCell>
+            <TableCell>{{ player.team.name }}</TableCell>
             <TableCell>
               <div class="flex items-center gap-2">
-                <a class="cursor-pointer" @click="editTeam(index)">
+                <a class="cursor-pointer" @click="editPlayer(index)">
                   <i class="fas fa-edit mr-2"></i>
                 </a>
-                <a class="cursor-pointer" @click="deleteTeam(index)">
+                <a class="cursor-pointer" @click="deletePlayer(index)">
                   <i class="fas fa-trash mr-2 text-red-500"></i>
                 </a>
               </div>
@@ -36,8 +36,18 @@
           </tr>
         </tbody>
       </Table>
+
+      <EmptyStateCta
+      v-if="players.length === 0"
+      icon="fas fa-exclamation-triangle"
+      :iconSize="160"
+      title="No players found"
+      description="No players found"
+      ctaBtn="Add Player"
+      @ctaClick="addPlayer"
+    />
   
-      <ModulesTeamEditPlayer :team="selectedTeam" v-model="editTeamDrawer" />
+      <ModulesPlayerEdit :player="selectedPlayer" v-model="editPlayerDrawer" />
     </div>
   </template>
   
@@ -49,14 +59,15 @@ import { Player } from '~/models/player';
   // Dummy team data
   const players = ref<Player[]>([]);
   
-  const selectedPlayer = ref<Player | null>(null);
+  const selectedPlayer = ref<Player>(new Player());
   
   // Drawer State
   const editPlayerDrawer = ref(false);
   
   // Add a new player
   const addPlayer = () => {
-    players.value.push(new Player());
+    selectedPlayer.value = new Player();
+    editPlayerDrawer.value = true;
   };
   
   // Edit a player

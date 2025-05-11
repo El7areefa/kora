@@ -11,7 +11,7 @@
     </div>
 
     <!-- Table -->
-    <Table type="bordered" showHover>
+    <Table v-if="teams.length > 0" type="bordered" showHover>
       <thead>
         <tr>
           <TableHead class="pl-2 w-[65%]">Name</TableHead>
@@ -36,6 +36,16 @@
         </tr>
       </tbody>
     </Table>
+
+    <EmptyStateCta
+      v-if="teams.length === 0"
+      icon="fas fa-exclamation-triangle"
+      :iconSize="160"
+      title="No teams found"
+      description="No teams found"
+      ctaBtn="Add Team"
+      @ctaClick="addTeam"
+    />
 
     <ModulesTeamEditPlayer :team="selectedTeam" v-model="editTeamDrawer" />
   </div>
@@ -68,15 +78,15 @@ const teams = ref<Team[]>([
   new Team(20,'Team 20'),
 ]);
 
-const selectedTeam = ref<Team | null>(null);
+const selectedTeam = ref<Team>(new Team(0, ''));
 
 // Drawer State
 const editTeamDrawer = ref(false);
 
 // Add a new team
 const addTeam = () => {
-  const newId = teams.value.length + 1;
-  teams.value.push(new Team(newId, `Team ${newId}`));
+    selectedTeam.value = new Team(0, '');
+    editTeamDrawer.value = true;
 };
 
 // Edit a team

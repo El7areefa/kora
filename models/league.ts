@@ -8,9 +8,9 @@ export class League {
     teams: Team[];
     matches: Match[];
 
-    constructor() {
-        this.id = 0;
-        this.name = '';
+    constructor(id: number, name: string) {
+        this.id = id;
+        this.name = name;
         this.logo = '';
         this.teams = [];
         this.matches = [];
