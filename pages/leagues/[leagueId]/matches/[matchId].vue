@@ -4,10 +4,8 @@
     </div>
 </template>
 
-<script setup>
 
-</script>
 
-<style lang="scss" scoped>
+<style lang="sass" scoped>
 
 </style>

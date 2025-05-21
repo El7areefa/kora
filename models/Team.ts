@@ -3,27 +3,28 @@ import type { Match } from "./match";
 import type { Player } from "./player";
 
 export class Team {
-  id: number;
+  id: string;
   name: string;
-  logoUrl: string;
-  numberOfSuccessMatches: number;
-  numberOfDefeatsMatches: number;
-  numberOfDrawsMatches: number;
-  numberOfPoints: number;
-  league: League;
-  players: Player[];
-  matches: Match[];
-  registrationDate: Date;
+  logoUrl?: string | null;
+  numOfMatches: number;
+  numOfSuccessMatches: number;
+  numOfLossMatches: number;
+  numOfDrawMatches: number;
+  numOfPoints: number;
+  leagueId: string;
+  players?: Player[] | null;
+  matches?: Match[] | null;
+  registrationDate?: Date | null;
 
-  constructor(id: number = 0, name: string = '', logoUrl: string = '', numberOfSucessMatches: number = 0, numberOfDefeatsMatches: number = 0, numberOfDrawsMatches: number = 0, numberOfPoints: number = 0, league: League = new League(), players: Player[] = [], matches: Match[] = [], registrationDate: Date = new Date()) {
+  constructor(id: number = 0, name: string = '', logoUrl: string = '', numOfSuccessMatches: number = 0, numOfLossMatches: number = 0, numOfDrawMatches: number = 0, numOfPoints: number = 0, leagueId: string = '', players: Player[] = [], matches: Match[] = [], registrationDate: Date = new Date()) {
     this.id = id;
     this.name = name;
     this.logoUrl = logoUrl;
-    this.numberOfSucessMatches = numberOfSucessMatches;
-    this.numberOfDefeatsMatches = numberOfDefeatsMatches;
-    this.numberOfDrawsMatches = numberOfDrawsMatches;
-    this.numberOfPoints = 0;
-    this.league = new League();
+    this.numOfSuccessMatches = numOfSuccessMatches;
+    this.numOfLossMatches = numOfLossMatches;
+    this.numOfDrawMatches = numOfDrawMatches;
+    this.numOfPoints = 0;
+    this.leagueId = '';
     this.players = [];
     this.matches = [];
     this.registrationDate = new Date();

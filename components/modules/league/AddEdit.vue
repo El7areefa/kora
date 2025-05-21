@@ -31,7 +31,7 @@
 
         <div class="space-y-4">
           <InputField label="League Name" v-model="league.name" type="text" />
-          <InputField label="League Logo" v-model="league.logo" type="file" />
+          <InputField label="League Logo" v-model="league.imageUrl" type="file" @change="handleFileUpload" />
         </div>
 
         <div class="flex justify-end mt-auto">
@@ -41,8 +41,13 @@
           >
             Cancel
           </button>
-          <button class="btn btn-sm btn-ghost" @click="addLeague">
-            <i class="fas fa-plus"></i> Add League
+          <button class="btn btn-sm btn-primary" @click="submitLeague" :disabled="isLoading">
+            <span v-if="isLoading">
+              <i class="fas fa-spinner fa-spin"></i> Processing...
+            </span>
+            <span v-else>
+              <i class="fas fa-plus"></i> {{ league?.id ? "Update" : "Add" }} League
+            </span>
           </button>
         </div>
       </div>
@@ -60,11 +65,70 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: boolean): void;
+  (e: "league-created", league: League): void;
+  (e: "league-updated", league: League): void;
 }>();
 
-const addLeague = () => {
-  console.log('addLeague');
-}
+const isLoading = ref(false);
+const errorMessage = ref("");
+
+const submitLeague = async () => {
+  if (!props.league.name) {
+    errorMessage.value = "League name is required";
+    return;
+  }
+
+  isLoading.value = true;
+  errorMessage.value = "";
+
+  try {
+    const payload = {
+      name: props.league.name,
+      imageUrl: props.league.imageUrl,
+      // Add other fields if needed
+    };
+
+    let response;
+    if (props.league.id) {
+      // Update existing league
+      response = await $fetch(`http://localhost:8080/api/v1/league/${props.league.id}`, {
+        method: 'PUT',
+        body: payload,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      emit('league-updated', response);
+    } else {
+      // Create new league
+      response = await $fetch('http://localhost:8080/api/v1/league', {
+        method: 'POST',
+        body: payload,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      emit('league-saved', response);
+    }
+
+    emit('update:modelValue', false);
+  } catch (error) {
+    console.error('Error submitting league:', error);
+    errorMessage.value = "Failed to submit league. Please try again.";
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const handleFileUpload = (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    // Here you would typically upload the file to a server and get the URL
+    // For now, we'll just store the file name
+    props.league.imageUrl = file.name;
+  }
+};
 </script>
 
 <style>

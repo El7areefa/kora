@@ -18,11 +18,9 @@
         isMobile ? 'w-40' : 'w-64'
       ]"
     >
-      <div class="p-6 font-bold text-xl border-b">Kora</div>
+      <div class="p-6 font-bold text-xl border-b">el7areefa</div>
       <nav class="mt-4 flex flex-col gap-2 p-4">
         <NuxtLink @click="closeSidebar" to="/" class="p-2 rounded hover:bg-gray-100 transition">🏠 Home</NuxtLink>
-        <NuxtLink @click="closeSidebar" to="/teams" class="p-2 rounded hover:bg-gray-100 transition">👥 Teams</NuxtLink>
-        <NuxtLink @click="closeSidebar" to="/players" class="p-2 rounded hover:bg-gray-100 transition">🏃 Players</NuxtLink>
       </nav>
     </aside>
   </div>

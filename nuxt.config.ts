@@ -21,6 +21,10 @@ export default defineNuxtConfig({
     },
   },
 
+  router: {
+      middleware: ['auth']
+  },
+
   ssr: false,
   modules: ['@nuxt/eslint'],
 })
