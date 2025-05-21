@@ -3,26 +3,32 @@
       <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold">Players</h1>
         <button
-          @click="addPlayer"
-          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          @click="openAddPlayer"
+          class="btn btn-primary"
         >
-          + Add Player
+          <i class="fas fa-plus"></i> Add Player
         </button>
       </div>
+
+      <SearchInput placeholder="Search for a player" v-model="search" />
   
       <!-- Table -->
       <Table v-if="players.length > 0" type="bordered" showHover>
         <thead>
           <tr>
-            <TableHead class="pl-2 w-[65%]">Name</TableHead>
-            <TableHead class="w-[25%]">Players</TableHead>
+            <TableHead class="pl-2">Name</TableHead>
+            <TableHead >Photo</TableHead>
+            <TableHead >Kit Size</TableHead>
+            <TableHead >Jersey Name</TableHead>
             <TableHead class="w-[10%]">Actions</TableHead>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(player, index) in players" :key="player.id">
             <TableCell>{{ player.name }}</TableCell>
-            <TableCell>{{ player.team.name }}</TableCell>
+            <TableCell>{{ player.imageUrl }}</TableCell>
+            <TableCell>{{ player.kitSize }}</TableCell>
+            <TableCell>{{ player.jerseyNumber }}</TableCell>
             <TableCell>
               <div class="flex items-center gap-2">
                 <a class="cursor-pointer" @click="editPlayer(index)">
@@ -44,17 +50,17 @@
       title="No players found"
       description="No players found"
       ctaBtn="Add Player"
-      @ctaClick="addPlayer"
+      @ctaClick="openAddPlayer"
     />
   
-      <ModulesPlayerEdit :player="selectedPlayer" v-model="editPlayerDrawer" />
+      <ModulesPlayerEdit :player="selectedPlayer" v-model="editPlayerDrawer" @addPlayer="addPlayer" />
     </div>
   </template>
   
   <script setup lang="ts">
 import { Player } from '~/models/player';
 
-
+const search = ref('');
   
   // Dummy team data
   const players = ref<Player[]>([]);
@@ -65,9 +71,14 @@ import { Player } from '~/models/player';
   const editPlayerDrawer = ref(false);
   
   // Add a new player
-  const addPlayer = () => {
+  const openAddPlayer = () => {
     selectedPlayer.value = new Player();
     editPlayerDrawer.value = true;
+  };
+
+  const addPlayer = () => {
+    players.value.push(selectedPlayer.value);
+    editPlayerDrawer.value = false;
   };
   
   // Edit a player

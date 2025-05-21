@@ -8,8 +8,8 @@ export class Player {
     birthDate: Date;
     jerseyName: string;
     jerseyNumber: number;
-    kitSize: string;
-    position: string;
+    kitSize: KitSize;
+    position: Position;
     numOfGoals: number;
     numOfAssists: number;
     numOfYellowCards: number;
@@ -27,8 +27,8 @@ export class Player {
         this.birthDate = new Date();
         this.jerseyName = '';
         this.jerseyNumber = 0;
-        this.kitSize = '';
-        this.position = '';
+        this.kitSize = kitSizes[0];
+        this.position = position[0];
         this.numOfGoals = 0;
         this.numOfAssists = 0;
         this.numOfYellowCards = 0;
@@ -43,3 +43,37 @@ export class Player {
 }
 
 
+export const kitSizes = [
+    'small',
+    'medium',
+    'large',
+    'xlarge',
+    'xxlarge',
+    'xxxlarge',
+    'xxxxlarge',
+    'xxxxxlarge',
+  ] as const;
+  
+  export type KitSize = typeof kitSizes[number];
+
+  export const position = [
+    'GK',
+    'CB',
+    'LB',
+    'RB',
+    'LWB',
+    'RWB',
+    'CDM',
+    'CM',
+    'CAM',
+    'LM',
+    'RM',
+    'LW',
+    'RW',
+    'CF',
+    'ST',
+    'SS',
+  ] as const;
+  
+  export type Position = typeof position[number];
+  
