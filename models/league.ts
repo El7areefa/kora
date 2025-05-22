@@ -2,18 +2,24 @@ import { Match } from "./match";
 import { Team } from "./Team";
 
 export class League {
-    id: number;
+    id: string;
     name: string;
-    logo: string;
+    imageUrl: string;
     teams: Team[];
     matches: Match[];
 
-    constructor(id: number, name: string) {
+    constructor(id: string, name: string) {
         this.id = id;
         this.name = name;
-        this.logo = '';
+        this.imageUrl = '';
         this.teams = [];
         this.matches = [];
     }
+}
+
+
+export interface LeaguePayload {
+    name: string;
+    imageUrl: string;
 }
 

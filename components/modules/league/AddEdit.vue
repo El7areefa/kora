@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { League } from "~/models/league";
+import type { League, LeaguePayload } from "~/models/league";
 
 const props = defineProps<{
   league: League;
@@ -65,8 +65,8 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: boolean): void;
-  (e: "league-created", league: League): void;
-  (e: "league-updated", league: League): void;
+  (e: "league-created"): void;
+  (e: "league-updated"): void;
 }>();
 
 const isLoading = ref(false);
@@ -80,38 +80,27 @@ const submitLeague = async () => {
 
   isLoading.value = true;
   errorMessage.value = "";
+  const payload: LeaguePayload= {
+    name: props.league.name,
+    imageUrl: props.league.imageUrl,
+    // Add other fields if needed
+  };
 
   try {
-    const payload = {
-      name: props.league.name,
-      imageUrl: props.league.imageUrl,
-      // Add other fields if needed
-    };
-
-    let response;
     if (props.league.id) {
       // Update existing league
-      response = await $fetch(`http://localhost:8080/api/v1/league/${props.league.id}`, {
-        method: 'PUT',
-        body: payload,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      emit('league-updated', response);
+      updateLeague(payload);
     } else {
       // Create new league
-      response = await $fetch('http://localhost:8080/api/v1/league', {
-        method: 'POST',
-        body: payload,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      emit('league-saved', response);
+      for (let i = 0; i < 30; i++) {
+        createLeague({
+          name: `League ${i}`,
+          imageUrl: ``,
+        });
+        
+      }
     }
 
-    emit('update:modelValue', false);
   } catch (error) {
     console.error('Error submitting league:', error);
     errorMessage.value = "Failed to submit league. Please try again.";
@@ -119,6 +108,34 @@ const submitLeague = async () => {
     isLoading.value = false;
   }
 };
+
+const createLeague = (payload: LeaguePayload) => {
+  useFetchAPI<League>('/league', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: payload,
+  }).then((response) => {
+    if (response.data.value) {
+      // emit('league-created');
+    }
+  });
+}
+
+const updateLeague = (payload: LeaguePayload) => {
+  useFetchAPI<League>(`/league/${props.league.id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: payload,
+  }).then((response) => {
+    if (response.data.value) {
+      emit('league-updated');
+    }
+  });
+}
 
 const handleFileUpload = (event: Event) => {
   const input = event.target as HTMLInputElement;

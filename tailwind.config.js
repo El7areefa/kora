@@ -90,110 +90,7 @@ export default {
           max: "1280px",
         },
       },
-      colors: {
-        transparent: "var(--lf-color-transparent)",
-        black: "var(--lf-color-black)",
-        white: "var(--lf-color-white)",
-        background: "var(--lf-color-background)",
-        primary: {
-          900: "var(--lf-color-primary-900)",
-          800: "var(--lf-color-primary-800)",
-          750: "var(--lf-color-primary-750)",
-          700: "var(--lf-color-primary-700)",
-          600: "var(--lf-color-primary-600)",
-          500: "var(--lf-color-primary-500)",
-          400: "var(--lf-color-primary-400)",
-          300: "var(--lf-color-primary-300)",
-          200: "var(--lf-color-primary-200)",
-          150: "var(--lf-color-primary-150)",
-          125: "var(--lf-color-primary-125)",
-          100: "var(--lf-color-primary-100)",
-          50: "var(--lf-color-primary-50)",
-          25: "var(--lf-color-primary-25)",
-        },
-        secondary: {
-          500: "var(--lf-color-secondary-500)",
-          400: "var(--lf-color-secondary-400)",
-          300: "var(--lf-color-secondary-300)",
-          200: "var(--lf-color-secondary-200)",
-          100: "var(--lf-color-secondary-100)",
-          50: "var(--lf-color-secondary-50)",
-        },
-        gray: {
-          900: "var(--lf-color-gray-900)",
-          800: "var(--lf-color-gray-800)",
-          700: "var(--lf-color-gray-700)",
-          600: "var(--lf-color-gray-600)",
-          500: "var(--lf-color-gray-500)",
-          400: "var(--lf-color-gray-400)",
-          300: "var(--lf-color-gray-300)",
-          250: "var(--lf-color-gray-250)",
-          200: "var(--lf-color-gray-200)",
-          100: "var(--lf-color-gray-100)",
-          50: "var(--lf-color-gray-50)",
-        },
-        red: {
-          900: "var(--lf-color-red-900)",
-          800: "var(--lf-color-red-800)",
-          700: "var(--lf-color-red-700)",
-          600: "var(--lf-color-red-600)",
-          500: "var(--lf-color-red-500)",
-          400: "var(--lf-color-red-400)",
-          300: "var(--lf-color-red-300)",
-          200: "var(--lf-color-red-200)",
-          100: "var(--lf-color-red-100)",
-          50: "var(--lf-color-red-50)",
-        },
-        yellow: {
-          900: "var(--lf-color-yellow-900)",
-          800: "var(--lf-color-yellow-800)",
-          700: "var(--lf-color-yellow-700)",
-          600: "var(--lf-color-yellow-600)",
-          500: "var(--lf-color-yellow-500)",
-          400: "var(--lf-color-yellow-400)",
-          300: "var(--lf-color-yellow-300)",
-          200: "var(--lf-color-yellow-200)",
-          100: "var(--lf-color-yellow-100)",
-          50: "var(--lf-color-yellow-50)",
-        },
-        green: {
-          1000: "var(--lf-color-green-1000)",
-          900: "var(--lf-color-green-900)",
-          800: "var(--lf-color-green-800)",
-          700: "var(--lf-color-green-700)",
-          600: "var(--lf-color-green-600)",
-          500: "var(--lf-color-green-500)",
-          400: "var(--lf-color-green-400)",
-          300: "var(--lf-color-green-300)",
-          200: "var(--lf-color-green-200)",
-          100: "var(--lf-color-green-100)",
-          50: "var(--lf-color-green-50)",
-        },
-        purple: {
-          900: "var(--lf-color-purple-900)",
-          800: "var(--lf-color-purple-800)",
-          700: "var(--lf-color-purple-700)",
-          600: "var(--lf-color-purple-600)",
-          500: "var(--lf-color-purple-500)",
-          400: "var(--lf-color-purple-400)",
-          300: "var(--lf-color-purple-300)",
-          200: "var(--lf-color-purple-200)",
-          100: "var(--lf-color-purple-100)",
-          50: "var(--lf-color-purple-50)",
-        },
-      },
       spacing,
-      borderWidth: {
-        3: "3px",
-      },
-      boxShadow: {
-        DEFAULT:
-          "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
-        md: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
-        lg: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
-        xl: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
-        "2xl": "0 25px 50px -12px rgb(0 0 0 / 0.25)",
-      },
       fontSize: {
         "4xs": ["0.5rem"],
         "3xs": ["0.625rem"],
@@ -234,16 +131,6 @@ export default {
           "var(--lf-text-large-line-height)",
         ],
       },
-      letterSpacing: {
-        1: "0.0625rem",
-        wide: "0.125em",
-      },
-      lineHeight: {
-        loose: "1.75em",
-        3.5: ".875rem",
-        4.5: "1.125rem",
-        15: "3.75rem",
-      },
       maxHeight: {
         ...spacing,
       },
@@ -265,12 +152,6 @@ export default {
         15: "0.15",
         35: "0.35",
       },
-      transitionProperty: {
-        DEFAULT:
-          "color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter",
-        colors:
-          "color, background-color, border-color, text-decoration-color, fill, stroke",
-      },
       width: {
         fit: "fit-content"
       },
@@ -282,56 +163,5 @@ export default {
   plugins: [
     require('daisyui'),
   ],
-  daisyui: {
-    themes: [
-      {
-        light: {
-          name: "light",
-          colorScheme: "light",
-          default: false,
-          prefersDark: false,
 
-          'base-100': 'oklch(98% 0.003 247.858)',
-          'base-200': 'oklch(96% 0.007 247.896)',
-          'base-300': 'oklch(92% 0.013 255.508)',
-          'base-content': 'oklch(20% 0.042 265.755)',
-
-          primary: 'oklch(80% 0.105 251.813)',
-          'primary-content': 'oklch(28% 0.091 267.935)',
-
-          secondary: 'oklch(78% 0.115 274.713)',
-          'secondary-content': 'oklch(25% 0.09 281.288)',
-
-          accent: 'oklch(0% 0 0)',
-          'accent-content': 'oklch(100% 0 0)',
-
-          neutral: 'oklch(37% 0.044 257.287)',
-          'neutral-content': 'oklch(98% 0.003 247.858)',
-
-          info: 'oklch(62% 0.214 259.815)',
-          'info-content': 'oklch(97% 0.014 254.604)',
-
-          success: 'oklch(76% 0.233 130.85)',
-          'success-content': 'oklch(98% 0.031 120.757)',
-
-          warning: 'oklch(79% 0.184 86.047)',
-          'warning-content': 'oklch(98% 0.026 102.212)',
-
-          error: 'oklch(64% 0.246 16.439)',
-          'error-content': 'oklch(96% 0.015 12.422)',
-
-          '--radius-selector': '0.5rem',
-          '--radius-field': '1rem',
-          '--radius-box': '2rem',
-
-          '--size-selector': '0.25rem',
-          '--size-field': '0.25rem',
-
-          '--border': '1px',
-          '--depth': '0',
-          '--noise': '0',
-        },
-      },
-    ],
-  },
 };

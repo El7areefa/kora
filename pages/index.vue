@@ -23,7 +23,7 @@
       <!-- Error State -->
       <div v-else-if="error" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
         <p>Error loading leagues: {{ error }}</p>
-        <button @click="fetchLeagues" class="mt-2 text-blue-600 hover:text-blue-800">
+        <button @click="fetchLeagues(0)" class="mt-2 text-blue-600 hover:text-blue-800">
           <i class="fas fa-sync-alt mr-1"></i> Try Again
         </button>
       </div>
@@ -86,7 +86,7 @@
       <ModulesLeagueAddEdit
         :league="selectedLeague"
         v-model="editLeagueDrawer"
-        @league-saved="handleLeagueSaved"
+        @league-created="handleLeagueSaved"
         @league-updated="handleLeagueSaved"
       />
     </div>
@@ -96,13 +96,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { League } from '~/models/league';
 
 const router = useRouter();
-
-interface League {
-  id: string;
-  name: string;
-}
 
 interface PaginatedResponse {
   content: League[];
@@ -127,47 +123,40 @@ const leagues = ref<PaginatedResponse>({
   first: true,
   number: 0
 });
-const selectedLeague = ref<League>({ id: '', name: '' });
+const selectedLeague = ref<League>(new League('',''));
 const editLeagueDrawer = ref(false);
 const loading = ref(true);
 const error = ref<string | null>(null);
 const currentPage = ref(0);
+const toast = useNuxtApp().$toast;
 
-// Fetch leagues from API
-const fetchLeagues = async (page: number = 0) => {
+const fetchLeagues = (page: number = 0) => {
   loading.value = true;
   error.value = null;
   currentPage.value = page;
-
-  try {
-    const response = await fetch(`http://localhost:8080/api/v1/league?page=${page}&size=10`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    leagues.value = data;
-  } catch (err) {
+  useFetchAPI(`/league?page=${page}&size=10`, {
+    method: 'GET'
+  })
+  .then((response) => {
+    leagues.value = response.data.value as PaginatedResponse;
+  })
+  .catch((err) => {
     error.value = err instanceof Error ? err.message : 'Failed to load leagues';
-    console.error('API Error:', err);
-  } finally {
+  })
+  .finally(() => {
     loading.value = false;
-  }
+  });
 };
 
 // Handle saved league
-const handleLeagueSaved = (savedLeague: League) => {
-  const index = leagues.value.content.findIndex(l => l.id === savedLeague.id);
-  if (index >= 0) {
-    leagues.value.content[index] = savedLeague;
-  } else {
-    leagues.value.content.unshift(savedLeague);
-  }
+const handleLeagueSaved = () => {
+  editLeagueDrawer.value = false;
   fetchLeagues(0);
 };
 
 // CRUD operations
 const addLeague = () => {
-  selectedLeague.value = { id: '', name: '' };
+  selectedLeague.value = new League('','');
   editLeagueDrawer.value = true;
 };
 
@@ -176,21 +165,20 @@ const editLeague = (league: League) => {
   editLeagueDrawer.value = true;
 };
 
-const deleteLeague = async (league: League) => {
+const deleteLeague = (league: League) => {
   if (!confirm(`Are you sure you want to delete "${league.name}"?`)) return;
 
   try {
-    const response = await fetch(`http://localhost:8080/api/v1/league/${league.id}`, {
+     useFetchAPI(`/league/${league.id}`, {
       method: 'DELETE'
+    }).then(res => {
+      toast('League deleted successfully', 'success');
+      fetchLeagues(currentPage.value)
     });
 
-    if (!response.ok) {
-      throw new Error('Failed to delete league');
-    }
-
-    await fetchLeagues(currentPage.value);
   } catch (err) {
-    error.value = err instanceof Error ? err.message : 'Failed to delete league';
+    toast('Failed to delete league', 'error');
+    // error.value = err instanceof Error ? err.message : 'Failed to delete league';
     console.error('Delete Error:', err);
   }
 };

@@ -11,4 +11,23 @@
   html:has(body.content-overflow-y) {
     scrollbar-gutter: stable;
   }
+
+  .toast {
+    .alert-info {
+      border-color: var(--color-info);
+      color: var(--color-info-content);
+      --alert-color: var(--color-info);
+    }
+    .alert-success {
+      border-color: var(--color-success);
+      color: var(--color-success-content);
+      --alert-color: var(--color-success);
+    }
+    .alert-error {
+      border-color: var(--color-error);
+      color: var(--color-error-content);
+      --alert-color: var(--color-error);
+    }
+    
+  }
 }
