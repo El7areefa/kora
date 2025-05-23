@@ -7,6 +7,8 @@ export default defineNuxtRouteMiddleware((to) => {
 
     if (!token) {
       return navigateTo('/login');
+    } else if (to.path === '/') {
+      return navigateTo('/leagues');
     }
-  }
+  } 
 });
