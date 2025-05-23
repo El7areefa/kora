@@ -13,24 +13,11 @@
 
     <!-- Loading State -->
     <div v-if="loading" class="flex justify-center items-center py-12">
-      <div
-        class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"
-      ></div>
+      <Loading />
     </div>
 
     <!-- Error State -->
-    <div
-      v-else-if="error"
-      class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4"
-    >
-      <p>Error loading leagues: {{ error }}</p>
-      <button
-        @click="fetchLeagues(0)"
-        class="mt-2 text-blue-600 hover:text-blue-800"
-      >
-        <i class="fas fa-sync-alt mr-1"></i> Try Again
-      </button>
-    </div>
+    <Error v-else-if="error" title="Leagues" :error="error" :onRetry="() => fetchLeagues(0)" />
 
     <!-- Data Table -->
     <div v-else-if="!loading && !error" class="overflow-x-auto">

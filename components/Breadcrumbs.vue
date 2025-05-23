@@ -5,7 +5,7 @@ const segments = computed(() => {
   const parts = route.path.split('/').filter(Boolean)
   return parts.map((segment, index) => {
     return {
-      label: decodeURIComponent(segment),
+      label: decodeURIComponent(segment).charAt(0).toUpperCase() + decodeURIComponent(segment).slice(1),
       to: '/' + parts.slice(0, index + 1).join('/'),
       isLast: index === parts.length - 1
     }

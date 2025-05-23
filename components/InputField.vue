@@ -15,7 +15,7 @@
   <div v-else>
     <fieldset class="fieldset">
       <legend class="fieldset-legend">{{ props.label }}</legend>
-      <input type="text" class="input" v-model="value" :placeholder="props.placeholder || 'Enter ' + props.label" />
+      <input :type="props.type" class="input" v-model="value" :placeholder="props.placeholder || 'Enter ' + props.label" />
     </fieldset>
   </div>
 </template>

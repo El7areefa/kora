@@ -20,11 +20,13 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-
-  router: {
-      middleware: ['auth']
+  typescript: {
+    tsConfig: {
+      compilerOptions: {
+        typeRoots: ['types', 'node_modules/@types']
+      }
+    }
   },
-
   ssr: false,
   modules: ['@nuxt/eslint'],
 })
