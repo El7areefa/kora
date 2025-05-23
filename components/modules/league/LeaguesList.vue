@@ -48,7 +48,6 @@
 <script setup lang="ts">
 import type { League } from "~/models/league";
 
-const router = useRouter();
 
 defineProps<{
   leagues: League[];

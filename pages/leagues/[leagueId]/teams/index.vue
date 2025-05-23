@@ -2,58 +2,35 @@
   <div class="p-8 flex flex-col flex-1">
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-3xl font-bold">Teams</h1>
+      <button
+        @click="addTeam"
+        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+      >
+        + Add Team
+      </button>
     </div>
 
+    <!-- Loading State -->
+    <div v-if="loading" class="flex justify-center items-center py-12">
+      <Loading />
+    </div>
+
+    <!-- Error State -->
+    <Error
+      v-else-if="error"
+      title="Teams"
+      :error="error"
+      :onRetry="() => fetchTeams()"
+    />
+
     <!-- Teams Table -->
-    <table
-      v-if="teams.length > 0"
-      class="min-w-full table-auto border-collapse border border-gray-300"
-    >
-      <thead>
-        <tr class="bg-gray-100">
-          <th class="border border-gray-300 px-4 py-2 text-left w-[65%]">
-            Name
-          </th>
-          <th class="border border-gray-300 px-4 py-2 w-[25%]">Players</th>
-          <th class="border border-gray-300 px-4 py-2 w-[10%]">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="(team, index) in teams"
-          :key="team.id"
-          class="hover:bg-gray-50"
-        >
-          <td class="border border-gray-300 px-4 py-2">
-            <router-link
-              :to="`/leagues/${leagueId}/teams/${team.id}`"
-              class="text-blue-600 hover:underline"
-            >
-              {{ team.name }}
-            </router-link>
-          </td>
-          <td class="border border-gray-300 px-4 py-2 text-center">
-            {{ team.players?.length ?? 0 }}
-          </td>
-          <td class="border border-gray-300 px-4 py-2 text-center">
-            <button
-              @click="editTeam(index)"
-              class="text-blue-600 hover:underline mr-2"
-              title="Edit Team"
-            >
-              <i class="fas fa-edit"></i>
-            </button>
-            <button
-              @click="deleteTeam(index)"
-              class="text-red-600 hover:underline"
-              title="Delete Team"
-            >
-              <i class="fas fa-trash"></i>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <ModulesTeamTeamsList
+      v-else-if="!loading && !error"
+      :teams="teams"
+      @edit-team="editTeam"
+      @delete-team="deleteTeam"
+      @add-team="addTeam"
+    />
 
     <!-- Empty state -->
     <div v-else class="text-center text-gray-500 mt-20">
@@ -66,23 +43,18 @@
       </button>
     </div>
 
-    <!-- Team Edit Drawer (Modal) -->
-    <teleport to="body">
-      <EditTeamDrawer
-        v-model="editTeamDrawer"
-        :team="selectedTeam"
-        @saved="handleTeamSaved"
-        @close="closeDrawer"
-        v-if="editTeamDrawer"
-      />
-    </teleport>
+    <ModulesTeamEditTeam
+      v-model="editTeamDrawer"
+      :team="selectedTeam"
+      @saved="handleTeamSaved"
+      @close="closeDrawer"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import EditTeamDrawer from "@/components/modules/team/EditPlayer.vue"; // Your drawer component path
 import { Team } from "~/models/Team";
 import type { PaginationResponse } from "~/models/pagination";
 
@@ -90,11 +62,14 @@ const toast = useNuxtApp().$toast;
 const route = useRoute();
 const leagueId = route.params.leagueId as string;
 
+const loading = ref(false);
+const error = ref("");
 const teams = ref<Team[]>([]);
 const selectedTeam = ref<Team>(new Team(leagueId));
 const editTeamDrawer = ref(false);
 
 const fetchTeams = () => {
+  loading.value = true;
   useFetchAPI<PaginationResponse<Team>>(`/${leagueId}/team`, {
     method: "GET",
   })
@@ -103,6 +78,9 @@ const fetchTeams = () => {
     })
     .catch((error) => {
       console.error("Error fetching teams:", error);
+    })
+    .finally(() => {
+      loading.value = false;
     });
 };
 
@@ -111,17 +89,16 @@ const addTeam = () => {
   editTeamDrawer.value = true;
 };
 
-const editTeam = (index: number) => {
+const editTeam = (team: Team) => {
   console.log("EDITING TEAM");
-  selectedTeam.value = { ...teams.value[index] }; // clone to avoid direct mutations
+  selectedTeam.value = { ...team }; // clone to avoid direct mutations
   editTeamDrawer.value = true;
 };
 
-const deleteTeam = (index: number) => {
+const deleteTeam = (team: Team) => {
   if (!confirm("Are you sure you want to delete this team?")) return;
 
-  const teamToDelete = teams.value[index];
-  useFetchAPI(`/team/${teamToDelete.id}`, {
+  useFetchAPI(`/${leagueId}/team/${team.id}`, {
     method: "DELETE",
   })
     .then(() => {
