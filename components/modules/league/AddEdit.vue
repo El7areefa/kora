@@ -92,13 +92,7 @@ const submitLeague = async () => {
       updateLeague(payload);
     } else {
       // Create new league
-      for (let i = 0; i < 30; i++) {
-        createLeague({
-          name: `League ${i}`,
-          imageUrl: ``,
-        });
-        
-      }
+      createLeague(payload);
     }
 
   } catch (error) {
@@ -118,7 +112,7 @@ const createLeague = (payload: LeaguePayload) => {
     body: payload,
   }).then((response) => {
     if (response.data.value) {
-      // emit('league-created');
+      emit('league-created');
     }
   });
 }

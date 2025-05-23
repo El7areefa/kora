@@ -72,8 +72,10 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { Match } from '~/models/Match'
+import { Match } from '~/models/match';
+import type { PaginationResponse } from '~/models/pagination';
 
+const toast = useNuxtApp().$toast;
 const matches = ref<Match[]>([])
 const selectedMatch = ref<Match | null>(null)
 const editMatchDrawer = ref(false)
@@ -81,15 +83,16 @@ const editMatchDrawer = ref(false)
 const route = useRoute();
 const leagueId = route.params.leagueId as string;
 
-const fetchMatches = async () => {
-  try {
-    const res = await fetch(`http://localhost:8080/api/v1/${leagueId}/match`);
-    if (!res.ok) throw new Error('Failed to fetch matches')
-    const data = await res.json()
-    matches.value = data.content;
-  } catch (error) {
-    console.error('Error loading matches:', error)
-  }
+const fetchMatches = () => {
+    useFetchAPI<PaginationResponse<Match>>(`/${leagueId}/match`, {
+        method: 'GET',
+    })
+    .then((res) => {
+        matches.value = res.data.value?.content || [];
+    })
+    .catch((error) => {
+        toast('Something went wrong while fetching matches', 'error')
+    })
 }
 
 const addMatch = () => {
@@ -102,18 +105,19 @@ const editMatch = (index: number) => {
   editMatchDrawer.value = true
 }
 
-const deleteMatch = async (index: number) => {
+const deleteMatch = (index: number) => {
   if (confirm('Are you sure you want to delete this match?')) {
     const matchId = matches.value[index].id
-    try {
-      const res = await fetch(`http://localhost:8080/api/v1/${leagueId}/match/${matchId}`, {
+    useFetchAPI<PaginationResponse<Match>>(`/${leagueId}/match/${matchId}`, {
         method: 'DELETE'
-      })
-      if (!res.ok) throw new Error('Failed to delete match')
-      matches.value.splice(index, 1)
-    } catch (err) {
-      console.error('Delete failed:', err)
-    }
+    })
+    .then(() => {
+        matches.value.splice(index, 1)
+        toast('Match deleted successfully', 'success')
+    })
+    .catch((err) => {
+      toast('Something went wrong while deleting match', 'error')
+    })
   }
 }
 
@@ -122,7 +126,6 @@ const handleMatchSaved = (match: Match) => {
   if (index !== -1) {
     matches.value[index] = { ...match }
   } else {
-    match.id = Date.now() // Temporary ID if not persisted yet
     matches.value.push({ ...match })
   }
 }

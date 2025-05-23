@@ -6,7 +6,7 @@
       <!-- Teams Card -->
       <NuxtLink
         :to="`/leagues/${leagueId}/teams`"
-        class="block bg-white p-6 rounded-lg shadow hover:shadow-lg transition flex items-center justify-between"
+        class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition flex items-center justify-between"
       >
         <div>
           <h2 class="text-xl font-semibold mb-2">Teams</h2>
@@ -18,7 +18,7 @@
       <!-- Matches Card -->
       <NuxtLink
         :to="`/leagues/${leagueId}/matches`"
-        class="block bg-white p-6 rounded-lg shadow hover:shadow-lg transition flex items-center justify-between"
+        class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition flex items-center justify-between"
       >
         <div>
           <h2 class="text-xl font-semibold mb-2">Matches</h2>

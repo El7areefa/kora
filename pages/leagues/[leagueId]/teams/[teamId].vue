@@ -77,7 +77,10 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import EditPlayerDrawer from '@/components/modules/player/Edit.vue';
 import type { Player } from '~/models/player';
+import type { Team } from '~/models/Team';
 
+
+const toast = useNuxtApp().$toast;
 const route = useRoute();
 const leagueId = route.params.leagueId as string;
 const teamId = route.params.teamId as string;
@@ -87,31 +90,32 @@ const loading = ref(true);
 const drawerOpen = ref(false);
 const selectedPlayer = ref<Player | null>(null);
 
-const fetchTeam = async () => {
+const fetchTeam = () => {
   loading.value = true;
-  try {
-    const res = await fetch(`http://localhost:8080/api/v1/${leagueId}/team/${teamId}`);
-    if (!res.ok) throw new Error('Failed to fetch team');
-    team.value = await res.json();
-  } catch (error) {
-    console.error('Error fetching team:', error);
-    team.value = null;
-  } finally {
-    loading.value = false;
-  }
+  useFetchAPI<Team>(`/${leagueId}/team/${teamId}`)
+    .then((res) => {
+      team.value = res.data.value;
+    })
+    .catch(() => {
+      toast('Something went wrong while fetching team', 'error');
+    })
+    .finally(() => {
+      loading.value = false;
+    });
 };
 
-const deletePlayer = async (playerId: string) => {
+const deletePlayer = (playerId: string) => {
   if (!confirm('Are you sure you want to delete this player?')) return;
-  try {
-    const res = await fetch(`http://localhost:8080/api/v1/${teamId}/player/${playerId}`, {
+  useFetchAPI<Team>(`/${leagueId}/team/${teamId}/player/${playerId}`, {
       method: 'DELETE',
+    })
+    .then(() => {
+      toast('Player deleted successfully', 'success');
+      fetchTeam();
+    })
+    .catch(() => {
+      toast('Something went wrong while deleting player', 'error');
     });
-    if (!res.ok) throw new Error('Failed to delete player');
-    await fetchTeam();
-  } catch (err) {
-    console.error('Error deleting player:', err);
-  }
 };
 
 const openEditDrawer = (player: Player) => {

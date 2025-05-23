@@ -15,50 +15,64 @@
 
       <div class="min-h-full w-96 flex flex-col bg-white p-6">
         <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-bold">Edit Team</h2>
+          <h2 class="text-xl font-bold">{{ isEdit ? 'Edit' : 'Add' }} Team</h2>
           <button class="btn btn-sm btn-circle btn-ghost" @click="closeDrawer">
             <i class="fas fa-times"></i>
           </button>
         </div>
 
         <form @submit.prevent="saveTeam" class="flex flex-col gap-4">
-          <div>
-            <label class="label">Team Name</label>
-            <input v-model="form.name" type="text" class="input" required autofocus />
-          </div>
+            <InputField
+              label="Team Name"
+              v-model="form.name"
+              type="text"
+            />
 
-          <div>
-            <label class="label">Logo URL</label>
-            <input v-model="form.logoUrl" type="text" class="input" />
-          </div>
+            <InputField
+              label="Logo URL"
+              v-model="form.logoUrl"
+              type="file"
+            />
 
-          <div>
-            <label class="label">Matches</label>
-            <input v-model.number="form.numOfMatches" type="number" class="input" />
-          </div>
+            <InputField
+              v-if="isEdit"
+              label="Matches"
+              v-model="form.numOfMatches"
+              type="number"
+            />
 
-          <div>
-            <label class="label">Success Matches</label>
-            <input v-model.number="form.numOfSuccessMatches" type="number" class="input" />
-          </div>
+            <InputField
+              v-if="isEdit"
+              label="Success Matches"
+              v-model="form.numOfSuccessMatches"
+              type="number"
+            />
 
-          <div>
-            <label class="label">Loss Matches</label>
-            <input v-model.number="form.numOfLossMatches" type="number" class="input" />
-          </div>
+            <InputField
+              v-if="isEdit"
+              label="Loss Matches"
+              v-model="form.numOfLossMatches"
+              type="number"
+            />
 
-          <div>
-            <label class="label">Draw Matches</label>
-            <input v-model.number="form.numOfDrawMatches" type="number" class="input" />
-          </div>
+            <InputField
+              v-if="isEdit"
+              label="Draw Matches"
+              v-model="form.numOfDrawMatches"
+              type="number"
+            />
 
-          <div>
-            <label class="label">Points</label>
-            <input v-model.number="form.numOfPoints" type="number" class="input" />
-          </div>
+            <InputField
+              v-if="isEdit"
+              label="Points"
+              v-model="form.numOfPoints"
+              type="number"
+            />
 
           <div class="flex justify-end gap-2 mt-6">
-            <button type="button" class="btn btn-sm" @click="closeDrawer">Cancel</button>
+            <button type="button" class="btn btn-sm" @click="closeDrawer">
+              Cancel
+            </button>
             <button type="submit" class="btn btn-sm btn-primary">
               <i class="fas fa-save mr-1"></i> Save
             </button>
@@ -70,61 +84,64 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
-import type { Team } from '~/models/team';
+import type { Team } from "~/models/Team";
 
+const toast = useNuxtApp().$toast;
 const props = defineProps<{
   team: Team;
   modelValue: boolean;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: boolean): void;
-  (e: 'saved', updatedTeam: Team): void;
+  (e: "update:modelValue", value: boolean): void;
+  (e: "saved"): void;
 }>();
 
 const route = useRoute();
 const leagueId = route.params.leagueId as string;
+const isEdit = computed(() => props.team.id !== '');
 
-const form = ref<Team>({ ...props.team });
-
-watch(
-  () => props.team,
-  (newTeam) => {
-    form.value = { ...newTeam };
-  },
-  { immediate: true }
-);
+const form = reactive<Team>({ ...props.team });
 
 const updateModelValue = (value: boolean) => {
-  emit('update:modelValue', value);
+  emit("update:modelValue", value);
 };
 
 const closeDrawer = () => {
-  emit('update:modelValue', false);
+  emit("update:modelValue", false);
 };
 
-const saveTeam = async () => {
-  try {
-    const res = await fetch(
-      `http://localhost:8080/api/v1/${leagueId}/team/${form.value.id}`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(form.value),
+const saveTeam = () => {
+  if(isEdit.value) {
+  useFetchAPI<Team>(`/${leagueId}/team/${form.id}`, {
+    method: "PUT",
+    body: form,
+  })
+    .then((res) => {
+      if (res.data.value) {
+        emit("saved");
+        closeDrawer();
+        toast("Team updated successfully", "success");
       }
-    );
-    if (!res.ok) throw new Error('Failed to update team');
-
-    const updatedTeam = await res.json();
-    emit('saved', updatedTeam);
-    closeDrawer();
-  } catch (err) {
-    console.error('Save failed:', err);
-    alert('Failed to update team');
+    })
+    .catch((err) => {
+      console.error("Save failed:", err);
+      toast("Failed to update team", "error");
+    });
+  } else {
+    useFetchAPI<Team>(`/${leagueId}/team`, {
+      method: "POST",
+      body: form,
+    }).then((res) => {
+      if (res.data.value) {
+        emit("saved");
+        closeDrawer();
+        toast("Team created successfully", "success");
+      }
+    }).catch((err) => {
+      console.error("Save failed:", err);
+      toast("Failed to update team", "error");
+    });
   }
 };
 </script>

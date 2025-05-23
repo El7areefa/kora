@@ -7,7 +7,7 @@ export class Match {
     homeTeamScore: number;
     awayTeamScore: number;
     matchDate: Date;
-    status: string;
+    status: MatchStatus;
     league: string; // id need to check if we will need object or string
     matchName?: string;
 
@@ -18,9 +18,17 @@ export class Match {
         this.homeTeamScore = 0;
         this.awayTeamScore = 0;
         this.matchDate = new Date();
-        this.status = '';
+        this.status = 'Scheduled';
         this.league = '';
         this.matchName = '';
     }
 }
 
+export const matchStatus = [
+    'Scheduled',
+    'Live',
+    'Finished',
+    'Cancelled',
+] as const;
+
+export type MatchStatus = typeof matchStatus[number];
