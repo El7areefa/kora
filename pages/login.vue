@@ -69,8 +69,8 @@ const handleLogin = async () => {
     const data = await res.json();
     localStorage.setItem('authToken', data.token);
 
-    // ✅ Redirect to admin dashboard or any other page
-    router.push('/admin/dashboard');
+    // redirect to user home page
+    router.push('/user');
   } catch (err: any) {
     errorMessage.value = err.message || 'Login failed';
   }
