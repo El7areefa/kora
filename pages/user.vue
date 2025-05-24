@@ -151,6 +151,10 @@ import topScorer from '@/assets/images/top scorer.jpg';
 import topAssist from '@/assets/images/top assist.jpg';
 import topGoalie from '@/assets/images/top goalie.jpg';
 
+definePageMeta({
+  layout: 'user' // 👈 This refers to layouts/auth.vue
+})
+
 const route = useRoute();
 const leagueId = route.params.leagueId as string;
 const leagues = ref<League[]>([]);
