@@ -58,6 +58,7 @@
 <script lang="ts" setup>
 import type { League, LeaguePayload } from "~/models/league";
 
+const toast = useNuxtApp().$toast;
 const props = defineProps<{
   league: League;
   modelValue: boolean;
@@ -70,16 +71,10 @@ const emit = defineEmits<{
 }>();
 
 const isLoading = ref(false);
-const errorMessage = ref("");
 
 const submitLeague = async () => {
-  if (!props.league.name) {
-    errorMessage.value = "League name is required";
-    return;
-  }
 
   isLoading.value = true;
-  errorMessage.value = "";
   const payload: LeaguePayload= {
     name: props.league.name,
     imageUrl: props.league.imageUrl,
@@ -97,11 +92,15 @@ const submitLeague = async () => {
 
   } catch (error) {
     console.error('Error submitting league:', error);
-    errorMessage.value = "Failed to submit league. Please try again.";
   } finally {
     isLoading.value = false;
   }
 };
+
+const onError = (error: any) => {
+  console.error('Error submitting league:', error);
+  toast('Failed to submit league. Please try again.', 'error');
+}
 
 const createLeague = (payload: LeaguePayload) => {
   useFetchAPI<League>('/league', {
@@ -113,8 +112,9 @@ const createLeague = (payload: LeaguePayload) => {
   }).then((response) => {
     if (response.data.value) {
       emit('league-created');
+      toast('League created successfully.', 'success');
     }
-  });
+  }).catch(onError);
 }
 
 const updateLeague = (payload: LeaguePayload) => {
@@ -127,8 +127,9 @@ const updateLeague = (payload: LeaguePayload) => {
   }).then((response) => {
     if (response.data.value) {
       emit('league-updated');
+      toast('League updated successfully.', 'success');
     }
-  });
+  }).catch(onError);
 }
 
 const handleFileUpload = (event: Event) => {

@@ -5,17 +5,42 @@
     <label class="label">Max size 2MB</label>
   </fieldset>
 
-  <fieldset v-else-if="props.type === 'toggle'" class="fieldset bg-base-100 border-base-300 rounded-box w-64 border p-4">
+  <fieldset
+    v-else-if="props.type === 'toggle'"
+    class="fieldset bg-base-100 border-base-300 rounded-box w-64 border p-4"
+  >
     <legend class="fieldset-legend">{{ props.label }}</legend>
     <label class="label">
-      <input type="checkbox" v-model="value" class="toggle toggle-primary checked:bg-primary-content" />
+      <input
+        type="checkbox"
+        v-model="value"
+        class="toggle toggle-primary checked:bg-primary-content"
+      />
+    </label>
+  </fieldset>
+
+  <fieldset
+    v-else-if="props.type === 'select'"
+    class="fieldset bg-base-100 border-base-300 rounded-box w-64 border p-4"
+  >
+    <legend class="fieldset-legend">{{ props.label }}</legend>
+    <label class="label">
+      <select v-model="value" class="select text-black">
+        <option disabled selected>Select {{ props.label }}</option>
+        <option class="text-black" v-for="option in props.options" :key="option">{{ option }}</option>
+      </select>
     </label>
   </fieldset>
 
   <div v-else>
     <fieldset class="fieldset">
       <legend class="fieldset-legend">{{ props.label }}</legend>
-      <input :type="props.type" class="input" v-model="value" :placeholder="props.placeholder || 'Enter ' + props.label" />
+      <input
+        :type="props.type"
+        class="input"
+        v-model="value"
+        :placeholder="props.placeholder || 'Enter ' + props.label"
+      />
     </fieldset>
   </div>
 </template>
@@ -25,6 +50,7 @@ const props = defineProps<{
   modelValue: string | number | boolean;
   label: string;
   placeholder?: string;
+  options?: string[];
   type?:
     | "text"
     | "number"
@@ -56,10 +82,6 @@ const handleFileChange = (event: Event) => {
     emit("update:modelValue", file.name);
   }
 };
-
-
-
-
 </script>
 
 <style lang="sass" scoped></style>

@@ -26,39 +26,25 @@
         <div class="space-y-4">
           <InputField label="Name" v-model="localPlayer.name" type="text" />
           <InputField
-            label="Nick Name"
-            v-model="localPlayer.nickName"
-            type="text"
-          />
-          <InputField
-            label="Jersey Name"
-            v-model="localPlayer.jerseyName"
-            type="text"
-          />
-          <InputField
-            label="Jersey Number"
-            v-model="localPlayer.jerseyNumber"
+            label="Age"
+            v-model="localPlayer.age"
             type="number"
-          />
-          <InputField
-            label="Kit Size"
-            v-model="localPlayer.kitSize"
-            type="text"
           />
           <InputField
             label="Position"
             v-model="localPlayer.position"
-            type="text"
+            type="select"
+            :options="positionOptions"
           />
           <InputField
             label="Goal Keeper"
-            v-model="localPlayer.isGoalKeeper"
-            type="checkbox"
+            v-model="localPlayer.goalKeeper"
+            type="toggle"
           />
           <InputField
-            label="Image URL"
+            label="Image"
             v-model="localPlayer.imageUrl"
-            type="text"
+            type="file"
           />
           <InputField
             label="Weight"
@@ -85,7 +71,7 @@
 
 <script lang="ts" setup>
 import { ref, watch } from "vue";
-import type { Player } from "~/models/player";
+import { position, type Player } from "~/models/player";
 import InputField from "@/components/InputField.vue";
 
 const toast = useNuxtApp().$toast;
@@ -100,6 +86,8 @@ const emit = defineEmits<{
   (e: "update:modelValue", value: boolean): void;
 }>();
 
+const positionOptions = position.map(p => p.toUpperCase());
+
 const localPlayer = ref<Player>({ ...props.player });
 
 watch(
@@ -113,7 +101,7 @@ watch(
 const closeDrawer = () => emit("update:modelValue", false);
 
 const submit = () => {
-  if (localPlayer.value.id && localPlayer.value.id > 0) {
+  if (localPlayer.value.id && localPlayer.value.id !== '') {
     updatePlayer();
   } else {
     addPlayer();
@@ -128,6 +116,7 @@ const updatePlayer = () => {
     .then((res) => {
       if (res.data.value) {
         closeDrawer();
+        toast("Player updated successfully", "success");
       }
     })
     .catch((error) => {
@@ -137,13 +126,15 @@ const updatePlayer = () => {
 };
 
 const addPlayer = () => {
+  const { team, id, ...payload } = localPlayer.value;
   useFetchAPI<Player>(`/${props.teamId}/player`, {
     method: "POST",
-    body: JSON.stringify(localPlayer.value),
+    body: payload,
   })
     .then((res) => {
       if (res.data.value) {
         closeDrawer();
+        toast("Player added successfully", "success");
       }
     })
     .catch((error) => {

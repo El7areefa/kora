@@ -101,7 +101,7 @@ const route = useRoute();
 const leagueId = route.params.leagueId as string;
 const isEdit = computed(() => props.team.id !== '');
 
-const form = reactive<Team>({ ...props.team });
+const form = reactive<Team>(props.team);
 
 const updateModelValue = (value: boolean) => {
   emit("update:modelValue", value);
