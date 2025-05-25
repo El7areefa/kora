@@ -10,6 +10,8 @@ export class Match {
     status: MatchStatus;
     league: string; // id need to check if we will need object or string
     matchName?: string;
+    homeTeam: Team;
+    awayTeam: Team;
 
     constructor() {
         this.id = '';
@@ -21,6 +23,8 @@ export class Match {
         this.status = 'Scheduled';
         this.league = '';
         this.matchName = '';
+        this.homeTeam = new Team();
+        this.awayTeam = new Team();
     }
 }
 
