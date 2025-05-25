@@ -1,6 +1,9 @@
 <template>
   <div class="flex flex-col flex-grow">
-    <slot />
+    <Header />
+    <div class="pt-20 flex flex-col flex-grow">
+      <slot />
+    </div>
   </div>
 </template>
 

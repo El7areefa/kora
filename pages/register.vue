@@ -1,67 +1,65 @@
 <template>
-  <div>
-    <div class="min-h-screen bg-gray-100 py-10 px-4 overflow-y-auto">
-      <div class="w-full max-w-md mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h2 class="text-2xl font-bold text-center mb-6">Register</h2>
+  <div class="flex-grow bg-gray-100 py-10 px-4 overflow-y-auto">
+    <div class="w-full max-w-md mx-auto bg-white rounded-lg shadow-lg p-8">
+      <h2 class="text-2xl font-bold text-center mb-6">Register</h2>
 
-        <form @submit.prevent="handleRegister" class="space-y-4">
-          <InputField
-            label="First Name"
-            v-model="form.firstName"
-            required
-            :validator="v$.firstName"
-          />
-          <InputField label="Second Name" v-model="form.secondName" />
-          <InputField
-            label="Email"
-            v-model="form.email"
-            type="email"
-            required
-            :validator="v$.email"
-          />
-          <InputField
-            label="Password"
-            v-model="form.password"
-            type="password"
-            required
-            :validator="v$.password"
-          />
-          <InputField
-            label="Phone Number"
-            v-model="form.phoneNumber"
-            type="tel"
-            required
-            :validator="v$.phoneNumber"
-          />
-          <InputField
-            label="Date of Birth"
-            v-model="form.dateOfBirth"
-            type="date"
-          />
-          <InputField
-            label="Position"
-            v-model="form.position"
-            type="select"
-            :options="positionOptions"
-          />
+      <form @submit.prevent="handleRegister" class="space-y-4">
+        <InputField
+          label="First Name"
+          v-model="form.firstName"
+          required
+          :validator="v$.firstName"
+        />
+        <InputField label="Second Name" v-model="form.secondName" />
+        <InputField
+          label="Email"
+          v-model="form.email"
+          type="email"
+          required
+          :validator="v$.email"
+        />
+        <InputField
+          label="Password"
+          v-model="form.password"
+          type="password"
+          required
+          :validator="v$.password"
+        />
+        <InputField
+          label="Phone Number"
+          v-model="form.phoneNumber"
+          type="tel"
+          required
+          :validator="v$.phoneNumber"
+        />
+        <InputField
+          label="Date of Birth"
+          v-model="form.dateOfBirth"
+          type="date"
+        />
+        <InputField
+          label="Position"
+          v-model="form.position"
+          type="select"
+          :options="positionOptions"
+        />
 
-          <InputField
-            label="Height (cm)"
-            v-model="form.height"
-            type="number"
-            :validator="v$.height"
-          />
-          <InputField
-            label="Weight (kg)"
-            v-model="form.weight"
-            type="number"
-            :validator="v$.weight"
-          />
-          <button type="submit" class="btn btn-primary w-full">
-            <i class="fas fa-user-plus mr-2"></i> Register
-          </button>
-        </form>
-      </div>
+        <InputField
+          label="Height (cm)"
+          v-model="form.height"
+          type="number"
+          :validator="v$.height"
+        />
+        <InputField
+          label="Weight (kg)"
+          v-model="form.weight"
+          type="number"
+          :validator="v$.weight"
+        />
+        <button type="submit" class="btn btn-primary w-full">
+          <i class="fas fa-user-plus mr-2"></i> Register
+        </button>
+      </form>
     </div>
   </div>
 </template>
@@ -70,7 +68,13 @@
 import { useRouter } from "vue-router";
 import { positions, type PlayerRegister } from "~/models/player";
 import useVuelidate from "@vuelidate/core";
-import { required, email, minLength, minValue, maxValue } from "@vuelidate/validators";
+import {
+  required,
+  email,
+  minLength,
+  minValue,
+  maxValue,
+} from "@vuelidate/validators";
 definePageMeta({
   layout: "user", // 👈 This refers to layouts/user.vue
 });
@@ -96,7 +100,7 @@ const rules = computed(() => ({
   email: { required, email },
   password: { required, minLength: minLength(6) },
   height: { minValue: minValue(140), maxValue: maxValue(250) },
-  weight: { minValue: minValue(60), maxValue: maxValue(200) }
+  weight: { minValue: minValue(60), maxValue: maxValue(200) },
 }));
 
 // Vuelidate instance
