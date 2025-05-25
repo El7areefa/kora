@@ -15,7 +15,7 @@ export default defineNuxtRouteMiddleware((to) => {
 });
 
 
-const isTokenValid = async () => {
+const isTokenValid = () => {
   const token = localStorage.getItem('authToken');
   if (!token) {
     return false;
