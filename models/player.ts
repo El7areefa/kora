@@ -19,7 +19,7 @@ export class Player {
     constructor() {
         this.id = '';
         this.name = '';
-        this.position = position[0];
+        this.position = positions[0];
         this.numOfGoals = 0;
         this.numOfAssists = 0;
         this.numOfYellowCards = 0;
@@ -48,7 +48,7 @@ export const kitSizes = [
   
   export type KitSize = typeof kitSizes[number];
 
-  export const position = [
+  export const positions = [
     'GK',
     'CB',
     'LB',
@@ -67,5 +67,16 @@ export const kitSizes = [
     'SS',
   ] as const;
   
-  export type Position = typeof position[number];
-  
+  export type Position = typeof positions[number];
+
+export interface PlayerRegister {
+    firstName: string;
+    secondName: string;
+    email: string;
+    password: string;
+    phoneNumber: string;
+    dateOfBirth: string;
+    position: Position;
+    height: number;
+    weight: number;
+}

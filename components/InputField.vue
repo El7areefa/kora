@@ -1,7 +1,12 @@
 <template>
   <fieldset v-if="props.type === 'file'" class="fieldset">
     <legend class="fieldset-legend">{{ props.label }}</legend>
-    <input type="file" class="file-input" @change="handleFileChange" />
+    <input
+      type="file"
+      @blur="props.validator?.$touch()"
+      class="file-input"
+      @change="handleFileChange"
+    />
     <label class="label">Max size 2MB</label>
   </fieldset>
 
@@ -12,6 +17,7 @@
     <legend class="fieldset-legend">{{ props.label }}</legend>
     <label class="label">
       <input
+        @blur="props.validator?.$touch()"
         type="checkbox"
         v-model="value"
         class="toggle toggle-primary checked:bg-primary-content"
@@ -25,34 +31,60 @@
   >
     <legend class="fieldset-legend">{{ props.label }}</legend>
     <label class="label">
-      <select v-model="value" class="select text-black">
+      <select
+        v-model="value"
+        @blur="props.validator?.$touch()"
+        class="select text-black"
+      >
         <option disabled selected>Select {{ props.label }}</option>
-        <option class="text-black" v-for="option in props.options" :key="option">{{ option }}</option>
+        <option
+          class="text-black"
+          v-for="option in props.options"
+          :key="option"
+        >
+          {{ option }}
+        </option>
       </select>
     </label>
   </fieldset>
 
   <div v-else>
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend">{{ props.label }}</legend>
-      <input
-        :type="props.type"
-        class="input"
-        v-model="value"
-        :placeholder="props.placeholder || 'Enter ' + props.label"
-      />
-    </fieldset>
+    <label class="block font-semibold mb-1"
+      >{{ props.label
+      }}<span v-if="props.required" class="text-red-500">*</span></label
+    >
+    <input
+      v-model="value"
+      @blur="props.validator?.$touch()"
+      :type="props.type"
+      required
+      class="w-full input"
+      :placeholder="props.placeholder || 'Enter ' + props.label"
+    />
+  </div>
+
+  <div v-if="props.validator" class="text-red-500 text-sm">
+    <span v-for="err in props.validator.$errors" :key="err.$uid">
+      {{ err.$message }}
+    </span>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { BaseValidation } from "@vuelidate/core";
+
 const props = defineProps<{
   modelValue: string | number | boolean;
   label: string;
   placeholder?: string;
   options?: string[];
+  required?: boolean;
+  validator?: BaseValidation;
   type?:
     | "text"
+    | "tel"
+    | "password"
+    | "email"
     | "number"
     | "date"
     | "checkbox"

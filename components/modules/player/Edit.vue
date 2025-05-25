@@ -71,7 +71,7 @@
 
 <script lang="ts" setup>
 import { ref, watch } from "vue";
-import { position, type Player } from "~/models/player";
+import { positions, type Player } from "~/models/player";
 import InputField from "@/components/InputField.vue";
 
 const toast = useNuxtApp().$toast;
@@ -86,7 +86,7 @@ const emit = defineEmits<{
   (e: "update:modelValue", value: boolean): void;
 }>();
 
-const positionOptions = position.map(p => p.toUpperCase());
+const positionOptions = positions.map(p => p.toUpperCase());
 
 const localPlayer = ref<Player>({ ...props.player });
 

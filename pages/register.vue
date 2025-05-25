@@ -5,59 +5,58 @@
         <h2 class="text-2xl font-bold text-center mb-6">Register</h2>
 
         <form @submit.prevent="handleRegister" class="space-y-4">
-          <div>
-            <label class="block font-semibold mb-1 text-gray-700">First Name<span class="text-red-500">*</span></label>
-            <input v-model="firstName" type="text" required class="w-full input" placeholder="Enter your first name" />
-          </div>
+          <InputField
+            label="First Name"
+            v-model="form.firstName"
+            required
+            :validator="v$.firstName"
+          />
+          <InputField label="Second Name" v-model="form.secondName" />
+          <InputField
+            label="Email"
+            v-model="form.email"
+            type="email"
+            required
+            :validator="v$.email"
+          />
+          <InputField
+            label="Password"
+            v-model="form.password"
+            type="password"
+            required
+            :validator="v$.password"
+          />
+          <InputField
+            label="Phone Number"
+            v-model="form.phoneNumber"
+            type="tel"
+            required
+            :validator="v$.phoneNumber"
+          />
+          <InputField
+            label="Date of Birth"
+            v-model="form.dateOfBirth"
+            type="date"
+          />
+          <InputField
+            label="Position"
+            v-model="form.position"
+            type="select"
+            :options="positionOptions"
+          />
 
-          <div>
-            <label class="block font-semibold mb-1">Second Name</label>
-            <input v-model="secondName" type="text" class="w-full input" placeholder="Enter your second name" />
-          </div>
-
-          <div>
-            <label class="block font-semibold mb-1">Email<span class="text-red-500">*</span></label>
-            <input v-model="email" type="email" required class="w-full input" placeholder="Enter your email" />
-          </div>
-
-          <div>
-            <label class="block font-semibold mb-1">Password<span class="text-red-500">*</span></label>
-            <input v-model="password" type="password" required class="w-full input" placeholder="Enter your password" />
-          </div>
-
-          <div>
-            <label class="block font-semibold mb-1">Phone Number<span class="text-red-500">*</span></label>
-            <input v-model="phoneNumber" type="tel" required class="w-full input"
-              placeholder="Enter your phone number" />
-          </div>
-
-          <div>
-            <label class="block font-semibold mb-1">Age</label>
-            <input v-model.number="age" type="number" min="1" class="w-full input" placeholder="Enter your age" />
-          </div>
-
-          <div>
-            <label class="block font-semibold mb-1">Date of Birth</label>
-            <input v-model="dateOfBirth" type="date" class="w-full input" />
-          </div>
-
-          <div>
-            <label class="block font-semibold mb-1">Position</label>
-            <input v-model="position" type="text" class="w-full input" placeholder="e.g., Midfielder" />
-          </div>
-
-          <div>
-            <label class="block font-semibold mb-1">Height (cm)</label>
-            <input v-model.number="height" type="number" class="w-full input" placeholder="Enter your height" />
-          </div>
-
-          <div>
-            <label class="block font-semibold mb-1">Weight (kg)</label>
-            <input v-model.number="weight" type="number" class="w-full input" placeholder="Enter your weight" />
-          </div>
-
-          <div v-if="errorMessage" class="text-red-600 text-sm">{{ errorMessage }}</div>
-
+          <InputField
+            label="Height (cm)"
+            v-model="form.height"
+            type="number"
+            :validator="v$.height"
+          />
+          <InputField
+            label="Weight (kg)"
+            v-model="form.weight"
+            type="number"
+            :validator="v$.weight"
+          />
           <button type="submit" class="btn btn-primary w-full">
             <i class="fas fa-user-plus mr-2"></i> Register
           </button>
@@ -68,57 +67,55 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter } from "vue-router";
+import { positions, type PlayerRegister } from "~/models/player";
+import useVuelidate from "@vuelidate/core";
+import { required, email, minLength, minValue, maxValue } from "@vuelidate/validators";
 
-const firstName = ref('');
-const secondName = ref('');
-const email = ref('');
-const password = ref('');
-const phoneNumber = ref('');
-const age = ref<number | null>(null);
-const dateOfBirth = ref('');
-const position = ref('');
-const height = ref<number | null>(null);
-const weight = ref<number | null>(null);
+const toast = useNuxtApp().$toast;
 
-const errorMessage = ref('');
+const form = reactive<PlayerRegister>({
+  firstName: "",
+  secondName: "",
+  email: "",
+  password: "",
+  phoneNumber: "",
+  dateOfBirth: "",
+  position: positions[0],
+  height: 0,
+  weight: 0,
+});
+
+// Validation rules
+const rules = computed(() => ({
+  firstName: { required },
+  phoneNumber: { required, minLength: minLength(10) },
+  email: { required, email },
+  password: { required, minLength: minLength(6) },
+  height: { minValue: minValue(140), maxValue: maxValue(250) },
+  weight: { minValue: minValue(60), maxValue: maxValue(200) }
+}));
+
+// Vuelidate instance
+const v$ = useVuelidate(rules, form);
+
 const router = useRouter();
 
+const positionOptions = positions.map((p) => p.toUpperCase());
+
 const handleRegister = async () => {
-  errorMessage.value = '';
-
-  try {
-    const res = await fetch('http://localhost:8080/api/v1/auth/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        firstName: firstName.value,
-        secondName: secondName.value,
-        email: email.value,
-        password: password.value,
-        phoneNumber: phoneNumber.value,
-        age: age.value,
-        dateOfBirth: dateOfBirth.value,
-        position: position.value,
-        height: height.value,
-        weight: weight.value,
-      }),
+  useFetchAPI("/auth/register", {
+    method: "POST",
+    body: form,
+  })
+    .then((res) => {
+      localStorage.setItem("authToken", (res.data as any).token);
+      toast("Registration successful", "success");
+      router.push("/admin/dashboard");
+    })
+    .catch((err) => {
+      toast(err.message || "Registration error", "error");
     });
-
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.message || 'Registration failed');
-    }
-
-    const data = await res.json();
-    localStorage.setItem('authToken', data.token);
-    router.push('/admin/dashboard');
-  } catch (err: any) {
-    errorMessage.value = err.message || 'Registration error';
-  }
 };
 </script>
 
