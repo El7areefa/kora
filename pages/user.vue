@@ -9,7 +9,9 @@
         <ul class="flex gap-6">
           <li><a href="#" class="hover:text-blue-400">Home</a></li>
           <li><a href="#" class="hover:text-blue-400">Payments</a></li>
-          <li><a href="#" class="hover:text-blue-400">Register</a></li>
+          <li>
+            <NuxtLink to="/register" class="hover:text-blue-400">Register</NuxtLink>
+          </li>
           <li><a href="#" class="hover:text-blue-400">Standings</a></li>
           <li><a href="#" class="hover:text-blue-400">Transfer Market</a></li>
           <li><a href="#" class="hover:text-blue-400">Contact Us</a></li>

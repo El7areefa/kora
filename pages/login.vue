@@ -39,6 +39,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+definePageMeta({
+  layout: "user", // 👈 This refers to layouts/user.vue
+});
 
 const username = ref('');
 const password = ref('');

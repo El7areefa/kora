@@ -71,6 +71,9 @@ import { useRouter } from "vue-router";
 import { positions, type PlayerRegister } from "~/models/player";
 import useVuelidate from "@vuelidate/core";
 import { required, email, minLength, minValue, maxValue } from "@vuelidate/validators";
+definePageMeta({
+  layout: "user", // 👈 This refers to layouts/user.vue
+});
 
 const toast = useNuxtApp().$toast;
 
