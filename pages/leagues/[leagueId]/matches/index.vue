@@ -48,7 +48,7 @@
     <!-- Empty state -->
     <EmptyStateCta
       v-if="matches.length === 0"
-      icon="fas fa-exclamation-triangle"
+      icon="fas fa-futbol"
       :iconSize="160"
       title="No matches found"
       description="You haven't created any matches yet."

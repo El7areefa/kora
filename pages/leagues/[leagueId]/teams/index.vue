@@ -3,7 +3,7 @@
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-3xl font-bold">Teams</h1>
       <button
-        @click="addTeam"
+        @click="addTeam()"
         class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
       >
         + Add Team
@@ -32,16 +32,6 @@
       @add-team="addTeam"
     />
 
-    <!-- Empty state -->
-    <div v-else class="text-center text-gray-500 mt-20">
-      <p class="mb-4 text-xl">No teams found.</p>
-      <button
-        @click="addTeam"
-        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-      >
-        Add Team
-      </button>
-    </div>
 
     <ModulesTeamEditTeam
       v-model="editTeamDrawer"

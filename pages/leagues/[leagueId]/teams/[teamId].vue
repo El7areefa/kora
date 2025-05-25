@@ -85,11 +85,10 @@
     </div>
 
     <EditPlayerDrawer
-      v-if="selectedPlayer"
       v-model="drawerOpen"
       :player="selectedPlayer"
       :teamId="teamId"
-      @player-updated="fetchTeam"
+      @saved="fetchTeam"
     />
   </div>
 </template>
@@ -109,7 +108,7 @@ const teamId = route.params.teamId as string;
 const team = ref<any>(null);
 const loading = ref(true);
 const drawerOpen = ref(false);
-const selectedPlayer = ref<Player | null>(null);
+const selectedPlayer = ref<Player>(new Player());
 
 const fetchTeam = () => {
   loading.value = true;

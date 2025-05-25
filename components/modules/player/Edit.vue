@@ -16,7 +16,7 @@
       <div class="min-h-full w-96 flex flex-col bg-white p-4">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-bold">
-            {{ localPlayer.id ? "Edit Player" : "Add Player" }}
+            {{ isEdit ? "Edit Player" : "Add Player" }}
           </h2>
           <button class="btn btn-sm btn-circle btn-ghost" @click="closeDrawer">
             <i class="fas fa-times"></i>
@@ -24,36 +24,36 @@
         </div>
 
         <div class="space-y-4">
-          <InputField label="Name" v-model="localPlayer.name" type="text" />
+          <InputField label="Name" v-model="props.player.name" type="text" />
           <InputField
             label="Age"
-            v-model="localPlayer.age"
+            v-model="props.player.age"
             type="number"
           />
           <InputField
             label="Position"
-            v-model="localPlayer.position"
+            v-model="props.player.position"
             type="select"
             :options="positionOptions"
           />
           <InputField
             label="Goal Keeper"
-            v-model="localPlayer.goalKeeper"
+            v-model="props.player.goalKeeper"
             type="toggle"
           />
           <InputField
             label="Image"
-            v-model="localPlayer.imageUrl"
+            v-model="props.player.imageUrl"
             type="file"
           />
           <InputField
             label="Weight"
-            v-model="localPlayer.weight"
+            v-model="props.player.weight"
             type="number"
           />
           <InputField
             label="Height"
-            v-model="localPlayer.height"
+            v-model="props.player.height"
             type="number"
           />
         </div>
@@ -70,7 +70,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from "vue";
 import { positions, type Player } from "~/models/player";
 import InputField from "@/components/InputField.vue";
 
@@ -84,63 +83,41 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: boolean): void;
+  (e: "saved"): void;
 }>();
+
 
 const positionOptions = positions.map(p => p.toUpperCase());
 
-const localPlayer = ref<Player>({ ...props.player });
+const isEdit = computed(() => props.player.id !== '');
 
-watch(
-  () => props.player,
-  (newVal) => {
-    localPlayer.value = { ...newVal };
-  },
-  { immediate: true }
-);
 
 const closeDrawer = () => emit("update:modelValue", false);
 
 const submit = () => {
-  if (localPlayer.value.id && localPlayer.value.id !== '') {
-    updatePlayer();
-  } else {
-    addPlayer();
-  }
+  const playerRequest = buildPlayerRequest(props.player);
+  useFetchAPI<Player>(isEdit.value ? `/${props.teamId}/player/${props.player.id}` : `/${props.teamId}/player`, {
+    method: isEdit.value ? "PUT" : "POST",
+    body: playerRequest,
+  })
+    .then(onSuccess)
+    .catch(onError);
 };
 
-const updatePlayer = () => {
-  useFetchAPI<Player>(`/${props.teamId}/player/${localPlayer.value.id}`, {
-    method: "PUT",
-    body: JSON.stringify(localPlayer.value),
-  })
-    .then((res) => {
-      if (res.data.value) {
-        closeDrawer();
-        toast("Player updated successfully", "success");
-      }
-    })
-    .catch((error) => {
-      console.error("Error updating player:", error);
-      toast("Something went wrong while updating player", "error");
-    });
+const onSuccess = () => {
+  closeDrawer();
+  emit("saved");
+  toast(`Player ${isEdit.value ? "updated" : "created"} successfully`, "success");
 };
 
-const addPlayer = () => {
-  const { team, id, ...payload } = localPlayer.value;
-  useFetchAPI<Player>(`/${props.teamId}/player`, {
-    method: "POST",
-    body: payload,
-  })
-    .then((res) => {
-      if (res.data.value) {
-        closeDrawer();
-        toast("Player added successfully", "success");
-      }
-    })
-    .catch((error) => {
-      console.error("Error adding player:", error);
-      toast("Something went wrong while adding player", "error");
-    });
+const onError = (error: any) => {
+  console.error("Error updating player:", error);
+  toast(`Failed to ${isEdit.value ? "update" : "create"} player`, "error");
+};
+
+const buildPlayerRequest = (player: Player) => {
+  const { team, id, ...payload } = player;
+  return payload;
 };
 </script>
 

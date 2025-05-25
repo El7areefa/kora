@@ -1,10 +1,10 @@
 <template>
-  <fieldset v-if="props.type === 'file'" class="fieldset">
+  <fieldset v-if="props.type === 'file'" class="fieldset w-full">
     <legend class="fieldset-legend">{{ props.label }}</legend>
     <input
       type="file"
       @blur="props.validator?.$touch()"
-      class="file-input"
+      class="file-input w-full"
       @change="handleFileChange"
     />
     <label class="label">Max size 2MB</label>
@@ -12,7 +12,7 @@
 
   <fieldset
     v-else-if="props.type === 'toggle'"
-    class="fieldset bg-base-100 border-base-300 rounded-box w-64 border p-4"
+    class="fieldset bg-base-100 border-base-300 rounded-box w-full border p-4"
   >
     <legend class="fieldset-legend">{{ props.label }}</legend>
     <label class="label">
@@ -27,7 +27,7 @@
 
   <fieldset
     v-else-if="props.type === 'select'"
-    class="fieldset bg-base-100 border-base-300 rounded-box w-64 border p-4"
+    class="fieldset bg-base-100 border-base-300 rounded-box w-full border p-4"
   >
     <legend class="fieldset-legend">{{ props.label }}</legend>
     <label class="label">
@@ -116,4 +116,20 @@ const handleFileChange = (event: Event) => {
 };
 </script>
 
-<style lang="sass" scoped></style>
+<style lang="scss" scoped>
+
+.input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.label {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  display: block;
+  color: #333;
+}
+</style>

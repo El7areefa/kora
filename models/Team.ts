@@ -33,3 +33,13 @@ export class Team {
 }
 
 
+export interface TeamRequest {
+  name: string;
+  logoUrl: string;
+  numOfMatches: number;
+  numOfSuccessMatches: number;
+  numOfLossMatches: number;
+  numOfDrawMatches: number;
+  numOfPoints: number;
+}
+

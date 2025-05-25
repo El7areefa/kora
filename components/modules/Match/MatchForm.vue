@@ -120,11 +120,11 @@ const emit = defineEmits<{
   (e: "saved", match: Match): void;
 }>();
 
-const match = reactive(props.match);
 const route = useRoute();
 const leagueId = route.params.leagueId as string;
 
 const teams = ref<Team[]>([]);
+
 
 const fetchTeams = () => {
   useFetchAPI<PaginationResponse<Team>>(`/${leagueId}/team`)
@@ -142,17 +142,17 @@ const fetchTeams = () => {
 onMounted(fetchTeams);
 
 const formattedDate = computed({
-  get: () => new Date(match.matchDate).toISOString().slice(0, 16),
+  get: () => new Date(props.match.matchDate).toISOString().slice(0, 16),
   set: (value: string) => {
-    match.matchDate = new Date(value);
+    props.match.matchDate = new Date(value);
   },
 });
 
 const close = () => emit("update:modelValue", false);
 
 const save = () => {
-  match.league = leagueId;
-  const { id, ...payload } = match;
+  props.match.league = leagueId;
+  const { id, ...payload } = props.match;
   useFetchAPI<Match>(`/${leagueId}/match`, {
     method: "POST",
     body: payload,

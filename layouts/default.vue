@@ -1,6 +1,6 @@
 <template>
   <Breadcrumbs />
-  <div class="flex flex-col h-screen">
+  <div class="flex flex-col flex-grow">
     <slot />
   </div>
 </template>
