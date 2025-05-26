@@ -71,6 +71,7 @@
 </template>
 
 <script setup lang="ts">
+import dayjs from 'dayjs';
 import { ref, onMounted } from 'vue'
 import { Match } from '~/models/match';
 import type { PaginationResponse } from '~/models/pagination';
@@ -131,9 +132,8 @@ const handleMatchSaved = (match: Match) => {
 }
 
 const formatDate = (date: string | Date) => {
-  const d = new Date(date)
-  return d.toLocaleString()
-}
+  return dayjs(date).format("DD/MM/YYYY h:mm A");
+};
 
 onMounted(fetchMatches)
 </script>

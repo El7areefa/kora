@@ -1,6 +1,5 @@
 <template>
   <div class="min-h-screen flex flex-col">
-
     <!-- Team Photo -->
     <section class="bg-white py-10">
       <div class="container mx-auto px-4">
@@ -17,9 +16,10 @@
       <div class="container mx-auto px-4">
         <h2 class="text-2xl font-bold mb-6">Recent Matches</h2>
         <ModulesUserMatchesScroll :matches="matches" />
-
       </div>
     </section>
+
+    <Standing />
 
     <!-- League Table and Statistics -->
     <section class="py-10">
@@ -146,6 +146,7 @@ import teamPhoto from "@/assets/images/team-photo.jpg";
 import topScorer from "@/assets/images/top scorer.jpg";
 import topAssist from "@/assets/images/top assist.jpg";
 import topGoalie from "@/assets/images/top goalie.jpg";
+import dayjs from "dayjs";
 
 definePageMeta({
   layout: "user", // 👈 This refers to layouts/user.vue
@@ -157,32 +158,26 @@ const selectedLeagueId = ref("");
 const matches = ref<Match[]>([]);
 const error = ref("");
 
-onMounted(async () => {
-  await fetchLeagues();
-  await fetchMatches();
+onMounted(() => {
+  fetchLeagues();
+  fetchMatches();
 });
 
-watch(selectedLeagueId, async (newVal) => {
+watch(selectedLeagueId, (newVal) => {
   if (newVal) {
-    await fetchTeamsByLeague(newVal);
+    fetchTeamsByLeague(newVal);
   }
 });
 
-const fetchMatches = async () => {
-  const now = new Date();
-  const start = new Date(now);
-  start.setDate(now.getDate() - 7);
-  const end = new Date(now);
-  end.setDate(now.getDate() + 7);
+const fetchMatches = () => {
+  const startDate = dayjs()
+    .subtract(7, "days")
+    .startOf("day");
+  const endDate = dayjs().add(7, "days").endOf("day");
 
-  const startISO = start.toISOString().split(".")[0];
-  const endISO = end.toISOString().split(".")[0];
-
-  const matchesUrl = `/${
-    selectedLeagueId.value
-  }/match/date-range?start=${encodeURIComponent(
-    startISO
-  )}&end=${encodeURIComponent(endISO)}`;
+  const matchesUrl = `/global/match/date-range?start=${encodeURIComponent(
+    startDate.format()
+  )}&end=${encodeURIComponent(endDate.format())}`;
   useFetchAPI<PaginationResponse<Match>>(matchesUrl, { method: "GET" })
     .then((res) => {
       matches.value = res.data.value?.content || [];
@@ -193,33 +188,31 @@ const fetchMatches = async () => {
     });
 };
 
-const fetchLeagues = async () => {
-  try {
-    const res = await useFetchAPI("/league", { method: "GET" });
-    leagues.value = res.data.value?.content || [];
-    if (leagues.value.length > 0) {
-      selectedLeagueId.value = leagues.value[0].id;
-      await fetchTeamsByLeague(leagues.value[0].id);
-    }
-  } catch (error) {
-    console.error("Failed to fetch leagues:", error);
-  }
+const fetchLeagues = () => {
+  useFetchAPI("/league", { method: "GET" })
+    .then((res) => {
+      leagues.value = res.data.value?.content || [];
+      if (leagues.value.length > 0) {
+        selectedLeagueId.value = leagues.value[0].id;
+        fetchTeamsByLeague(leagues.value[0].id);
+      }
+    })
+    .catch((err) => {
+      console.error("Failed to fetch leagues:", err);
+    });
 };
 
-const fetchTeamsByLeague = async (leagueId: string) => {
+const fetchTeamsByLeague = (leagueId: string) => {
   if (!leagueId) return;
-  try {
-    const res = await useFetchAPI<PaginationResponse<Team>>(
-      `/${leagueId}/team`,
-      { method: "GET" }
-    );
-    teams.value = res.data.value?.content || [];
-  } catch (error) {
-    console.error("Failed to fetch teams by league:", error);
-  }
+  useFetchAPI<PaginationResponse<Team>>(`/${leagueId}/team`, { method: "GET" })
+    .then((res) => {
+      teams.value = res.data.value?.content || [];
+      teams.value.sort((a, b) => b.numOfPoints - a.numOfPoints);
+    })
+    .catch((err) => {
+      console.error("Failed to fetch teams by league:", err);
+    });
 };
-
-
 </script>
 
 <style scoped>
@@ -230,6 +223,4 @@ const fetchTeamsByLeague = async (leagueId: string) => {
 select {
   min-width: 200px;
 }
-
-
 </style>

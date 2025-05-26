@@ -5,7 +5,7 @@
   >
     <div class="bg-white w-full max-w-xl p-6 rounded-lg shadow-md">
       <h2 class="text-xl font-semibold mb-4">
-        {{ match.id ? "Edit Match" : "Create Match" }}
+        {{ isEdit ? "Edit Match" : "Create Match" }}
       </h2>
 
       <form @submit.prevent="save">
@@ -66,7 +66,7 @@
           <label class="block mb-1">Match Date</label>
           <input
             type="datetime-local"
-            v-model="formattedDate"
+            v-model="match.matchDate"
             class="w-full border p-2 rounded"
           />
         </div>
@@ -104,6 +104,7 @@
 </template>
 
 <script setup lang="ts">
+import dayjs from "dayjs";
 import { useRoute } from "vue-router";
 import type { Match } from "~/models/match";
 import type { PaginationResponse } from "~/models/pagination";
@@ -114,6 +115,8 @@ const props = defineProps<{
   match: Match;
   modelValue: boolean;
 }>();
+
+const isEdit = computed(() => props.match.id !== '');
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: boolean): void;
@@ -141,32 +144,26 @@ const fetchTeams = () => {
 
 onMounted(fetchTeams);
 
-const formattedDate = computed({
-  get: () => new Date(props.match.matchDate).toISOString().slice(0, 16),
-  set: (value: string) => {
-    props.match.matchDate = new Date(value);
-  },
-});
 
 const close = () => emit("update:modelValue", false);
 
 const save = () => {
   props.match.league = leagueId;
   const { id, ...payload } = props.match;
-  useFetchAPI<Match>(`/${leagueId}/match`, {
-    method: "POST",
+  useFetchAPI<Match>(isEdit.value ? `/${leagueId}/match/${id}` : `/${leagueId}/match`, {
+    method: isEdit.value ? "PUT" : "POST",
     body: payload,
   })
     .then((res) => {
       if (res.data.value) {
         emit("saved", res.data.value);
         close();
-        toast("Match saved successfully", "success");
+        toast(`Match ${isEdit.value ? "updated" : "created"} successfully`, "success");
       }
     })
     .catch((error) => {
       console.error("Failed to save match:", error);
-      toast("Something went wrong while saving match", "error");
+      toast(`Something went wrong while ${isEdit.value ? "updating" : "creating"} match`, "error");
     });
 };
 </script>
