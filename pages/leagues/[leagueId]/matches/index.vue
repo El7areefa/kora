@@ -127,7 +127,7 @@ const leagueId = route.params.leagueId as string;
 const fetchMatches = (page: number = 0, query: string = "") => {
   loading.value = true;
   useFetchAPI<PaginationResponse<Match>>(
-    `/${leagueId}/match?page=${page}&size=10${query ? `&name=${query}` : ""}`,
+    `/${leagueId}/match?page=${page}&size=10${query ? `&name=${encodeURIComponent(query)}` : ""}`,
     {
       method: "GET",
     }

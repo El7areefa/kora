@@ -43,7 +43,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "update:searchQuery", query: string): void;
-  (e: "clear"): void;
 }>();
 
 

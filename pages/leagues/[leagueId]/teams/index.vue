@@ -82,7 +82,7 @@ const editTeamDrawer = ref(false);
 
 const fetchTeams = (page: number = 0, query: string = "") => {
   loading.value = true;
-  useFetchAPI<PaginationResponse<Team>>(`/${leagueId}/team?page=${page}&size=10${query ? `&name=${query}` : ""}`, {
+  useFetchAPI<PaginationResponse<Team>>(`/${leagueId}/team?page=${page}&size=10${query ? `&name=${encodeURIComponent(query)}` : ""}`, {
     method: "GET",
   })
     .then((res) => {
