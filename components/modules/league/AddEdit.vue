@@ -31,7 +31,12 @@
 
         <div class="space-y-4">
           <InputField label="League Name" v-model="league.name" type="text" />
-          <InputField label="League Logo" v-model="league.imageUrl" type="file" @change="handleFileUpload" />
+          <InputField
+            label="League Logo"
+            v-model="league.imageUrl"
+            type="file"
+            @change="handleFileUpload"
+          />
         </div>
 
         <div class="flex justify-end mt-auto">
@@ -41,12 +46,17 @@
           >
             Cancel
           </button>
-          <button class="btn btn-sm btn-primary" @click="submitLeague" :disabled="isLoading">
+          <button
+            class="btn btn-sm btn-primary"
+            @click="submitLeague"
+            :disabled="isLoading"
+          >
             <span v-if="isLoading">
               <i class="fas fa-spinner fa-spin"></i> Processing...
             </span>
             <span v-else>
-              <i class="fas fa-plus"></i> {{ league?.id ? "Update" : "Add" }} League
+              <i class="fas fa-plus"></i>
+              {{ league?.id ? "Update" : "Add" }} League
             </span>
           </button>
         </div>
@@ -73,64 +83,60 @@ const emit = defineEmits<{
 const isLoading = ref(false);
 
 const submitLeague = async () => {
-
   isLoading.value = true;
-  const payload: LeaguePayload= {
+  const payload: LeaguePayload = {
     name: props.league.name,
     imageUrl: props.league.imageUrl,
     // Add other fields if needed
   };
-
-  try {
-    if (props.league.id) {
-      // Update existing league
-      updateLeague(payload);
-    } else {
-      // Create new league
-      createLeague(payload);
-    }
-
-  } catch (error) {
-    console.error('Error submitting league:', error);
-  } finally {
-    isLoading.value = false;
+  if (props.league.id) {
+    // Update existing league
+    updateLeague(payload);
+  } else {
+    // Create new league
+    createLeague(payload);
   }
 };
 
 const onError = (error: any) => {
-  console.error('Error submitting league:', error);
-  toast('Failed to submit league. Please try again.', 'error');
-}
+  console.error("Error submitting league:", error);
+  toast("Failed to submit league. Please try again.", "error");
+  isLoading.value = false;
+};
 
 const createLeague = (payload: LeaguePayload) => {
-  useFetchAPI<League>('/league', {
-    method: 'POST',
+  useFetchAPI<League>("/league", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: payload,
-  }).then((response) => {
-    if (response.data.value) {
-      emit('league-created');
-      toast('League created successfully.', 'success');
-    }
-  }).catch(onError);
-}
+  })
+    .then((response) => {
+      if (response.data.value) {
+        emit("league-created");
+        toast("League created successfully.", "success");
+      }
+    })
+    .catch(onError);
+};
 
 const updateLeague = (payload: LeaguePayload) => {
   useFetchAPI<League>(`/league/${props.league.id}`, {
-    method: 'PUT',
+    method: "PUT",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: payload,
-  }).then((response) => {
-    if (response.data.value) {
-      emit('league-updated');
-      toast('League updated successfully.', 'success');
-    }
-  }).catch(onError);
-}
+  })
+    .then((response) => {
+      if (response.data.value) {
+        emit("league-updated");
+        toast("League updated successfully.", "success");
+      }
+    })
+    .catch(onError);
+};
 
 const handleFileUpload = (event: Event) => {
   const input = event.target as HTMLInputElement;

@@ -26,6 +26,7 @@
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.17",
     "autoprefixer": "^10.4.21",
     "daisyui": "^5.0.28",
     "postcss": "^8.5.3",

@@ -1,26 +1,32 @@
 <template>
   <div class="flex-1 p-8">
-    <!-- Your leagues content -->
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold">Leagues</h1>
-      <button
-        @click="addLeague"
-        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-      >
-        + Add League
-      </button>
-    </div>
+    <!-- Header -->
+    <TablePageHeader
+      title="Leagues"
+      addButtonText="Add League"
+      :addButtonAction="addLeague"
+      v-model:searchQuery="searchQuery"
+      :handleSearch="handleSearch"
+    />
 
     <!-- Loading State -->
-    <div v-if="loading" class="flex justify-center items-center py-12">
+    <div
+      v-if="loading && currentPage === 0"
+      class="flex justify-center items-center py-12"
+    >
       <Loading />
     </div>
 
     <!-- Error State -->
-    <Error v-else-if="error" title="Leagues" :error="error" :onRetry="() => fetchLeagues(0)" />
+    <Error
+      v-else-if="error"
+      title="Leagues"
+      :error="error"
+      :onRetry="() => fetchLeagues(0, searchQuery)"
+    />
 
     <!-- Data Table -->
-    <div v-else-if="!loading && !error" class="overflow-x-auto">
+    <div v-else class="overflow-x-auto">
       <ModulesLeagueLeaguesList
         :leagues="leagues.content"
         @add-league="addLeague"
@@ -29,6 +35,21 @@
       />
     </div>
 
+    <div
+      v-if="loading && currentPage !== 0"
+      class="flex justify-center items-center py-12"
+    >
+      <Loading />
+    </div>
+
+    <!-- Load More Button -->
+    <div v-if="!loading && !leagues.last" class="flex justify-center mt-4">
+      <button @click="loadMore" class="btn btn-sm btn-outline">
+        Load More
+      </button>
+    </div>
+
+    <!-- Edit/Add Drawer -->
     <ModulesLeagueAddEdit
       :league="selectedLeague"
       v-model="editLeagueDrawer"
@@ -43,37 +64,42 @@ import { ref, onMounted } from "vue";
 import { League } from "~/models/league";
 import type { PaginationResponse } from "~/models/pagination";
 
-
-// State
 const leagues = ref<PaginationResponse<League>>({
   content: [],
-  pageable: { pageNumber: 0, pageSize: 10 },
   last: true,
   totalElements: 0,
-  totalPages: 0,
-  first: true,
-  number: 0,
-  size: 0,
-  numberOfElements: 0,
-  empty: true,
 });
+
 const selectedLeague = ref<League>(new League("", ""));
 const editLeagueDrawer = ref(false);
 const loading = ref(true);
 const error = ref<string | null>(null);
 const currentPage = ref(0);
+const searchQuery = ref("");
 const toast = useNuxtApp().$toast;
 
-const fetchLeagues = (page: number = 0) => {
+const fetchLeagues = (page: number = 0, query: string = "") => {
   loading.value = true;
   error.value = null;
-  currentPage.value = page;
-  useFetchAPI<PaginationResponse<League>>(`/league?page=${page}&size=10`, {
-    method: "GET",
-  })
+  const searchParam = query ? `&name=${encodeURIComponent(query)}` : "";
+  useFetchAPI<PaginationResponse<League>>(
+    `/league?page=${page}&size=10${searchParam}`,
+    {
+      method: "GET",
+    }
+  )
     .then((response) => {
       if (response.data.value) {
-        leagues.value = response.data.value;
+        if (page === 0) {
+          leagues.value = response.data.value;
+        } else {
+          // Append new content
+          leagues.value.content = [
+            ...leagues.value.content,
+            ...response.data.value.content,
+          ];
+          leagues.value.last = response.data.value.last;
+        }
       }
     })
     .catch((err) => {
@@ -84,14 +110,22 @@ const fetchLeagues = (page: number = 0) => {
       loading.value = false;
     });
 };
-
-// Handle saved league
-const handleLeagueSaved = () => {
-  editLeagueDrawer.value = false;
-  fetchLeagues(0);
+const handleSearch = () => {
+  fetchLeagues(0, searchQuery.value);
 };
 
-// CRUD operations
+const loadMore = () => {
+  if (!leagues.value.last) {
+    currentPage.value += 1;
+    fetchLeagues(currentPage.value, searchQuery.value);
+  }
+};
+
+const handleLeagueSaved = () => {
+  editLeagueDrawer.value = false;
+  fetchLeagues(0, searchQuery.value);
+};
+
 const addLeague = () => {
   selectedLeague.value = new League();
   editLeagueDrawer.value = true;
@@ -110,7 +144,7 @@ const deleteLeague = (league: League) => {
   })
     .then(() => {
       toast("League deleted successfully", "success");
-      fetchLeagues(currentPage.value);
+      fetchLeagues(currentPage.value, searchQuery.value);
     })
     .catch((err) => {
       toast("Failed to delete league", "error");
@@ -118,14 +152,10 @@ const deleteLeague = (league: League) => {
     });
 };
 
-// Initial fetch
 onMounted(() => fetchLeagues(0));
 </script>
 
 <style>
-
-
-/* Make sure modals/drawers appear above everything */
 .modal,
 .drawer {
   z-index: 50;
