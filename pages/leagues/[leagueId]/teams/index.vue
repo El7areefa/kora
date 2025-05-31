@@ -1,17 +1,19 @@
 <template>
   <div class="p-8 flex flex-col flex-1">
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold">Teams</h1>
-      <button
-        @click="addTeam()"
-        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-      >
-        + Add Team
-      </button>
-    </div>
+    <!-- Header -->
+    <TablePageHeader
+      title="Teams"
+      addButtonText="Add Team"
+      :addButtonAction="addTeam"
+      v-model:searchQuery="searchQuery"
+      :handleSearch="handleSearch"
+    />
 
     <!-- Loading State -->
-    <div v-if="loading" class="flex justify-center items-center py-12">
+    <div
+      v-if="loading && currentPage === 0"
+      class="flex justify-center items-center py-12"
+    >
       <Loading />
     </div>
 
@@ -20,17 +22,31 @@
       v-else-if="error"
       title="Teams"
       :error="error"
-      :onRetry="() => fetchTeams()"
+      :onRetry="() => fetchTeams(0, searchQuery)"
     />
 
     <!-- Teams Table -->
     <ModulesTeamTeamsList
-      v-else-if="!loading && !error"
-      :teams="teams"
+      v-else
+      :teams="teams.content"
       @edit-team="editTeam"
       @delete-team="deleteTeam"
       @add-team="addTeam"
     />
+
+    <div
+      v-if="loading && currentPage !== 0"
+      class="flex justify-center items-center py-12"
+    >
+      <Loading />
+    </div>
+
+    <!-- Load More Button -->
+    <div v-if="!loading && !teams.last" class="flex justify-center mt-4">
+      <button @click="loadMore" class="btn btn-sm btn-outline">
+        Load More
+      </button>
+    </div>
 
 
     <ModulesTeamEditTeam
@@ -54,17 +70,30 @@ const leagueId = route.params.leagueId as string;
 
 const loading = ref(false);
 const error = ref("");
-const teams = ref<Team[]>([]);
+const teams = ref<PaginationResponse<Team>>({
+  content: [],
+  last: true,
+  totalElements: 0,
+});
+const currentPage = ref(0);
+const searchQuery = ref("");
 const selectedTeam = ref<Team>(new Team(leagueId));
 const editTeamDrawer = ref(false);
 
-const fetchTeams = () => {
+const fetchTeams = (page: number = 0, query: string = "") => {
   loading.value = true;
-  useFetchAPI<PaginationResponse<Team>>(`/${leagueId}/team`, {
+  useFetchAPI<PaginationResponse<Team>>(`/${leagueId}/team?page=${page}&size=10${query ? `&name=${encodeURIComponent(query)}` : ""}`, {
     method: "GET",
   })
     .then((res) => {
-      teams.value = res.data.value?.content || [];
+      if (res.data.value) {
+        if (page === 0) {
+          teams.value = res.data.value;
+        } else {
+          teams.value.content = [...teams.value.content, ...res.data.value.content];
+          teams.value.last = res.data.value.last;
+        }
+      }
     })
     .catch((error) => {
       console.error("Error fetching teams:", error);
@@ -73,6 +102,18 @@ const fetchTeams = () => {
       loading.value = false;
     });
 };
+
+const handleSearch = () => {
+  fetchTeams(0, searchQuery.value);
+};
+
+const loadMore = () => {
+  if (!teams.value.last) {
+    currentPage.value += 1;
+    fetchTeams(currentPage.value, searchQuery.value);
+  }
+};
+
 
 const addTeam = () => {
   selectedTeam.value = new Team(leagueId);
